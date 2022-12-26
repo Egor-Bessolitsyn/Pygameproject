@@ -1,4 +1,4 @@
-#https://www.spriters-resource.com/nes/batcity/
+# https://www.spriters-resource.com/nes/batcity/
 import pygame
 import os
 import sys
@@ -100,6 +100,23 @@ def start_screen():
         clock.tick(FPS)
 
 
+def end_screen():
+    fon = pygame.transform.scale(load_image('victory.png'), (WIDTH, HEIGHT))
+    screen.blit(fon, (0, 0))
+    font = pygame.font.Font(None, 30)
+    text_coord = 50
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN or \
+                    event.type == pygame.MOUSEBUTTONDOWN:
+                return  # начинаем игру
+        pygame.display.flip()
+        clock.tick(FPS)
+
+
 def generate_level(level):
     new_player, x, y = None, None, None
     for y in range(len(level)):
@@ -148,6 +165,11 @@ if __name__ == '__main__':
                     player.move(0, -1)
                     if pygame.sprite.spritecollideany(player, wall_group):
                         player.move(0, 1)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                size = WIDTH, HEIGHT
+                screen = pygame.display.set_mode(size)
+                end_screen()
+
         all_sprites.update()
         screen.fill((255, 255, 255))
         all_sprites.draw(screen)
