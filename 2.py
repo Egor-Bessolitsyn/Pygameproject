@@ -44,7 +44,7 @@ tile_images = {
     'wall': load_image('box.png'),
     'empty': load_image('grass.png')
 }
-player_image = load_image('mar.png')
+player_image = load_image('yellow_tanks.png')
 
 tile_width = tile_height = 50
 

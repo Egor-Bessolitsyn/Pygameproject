@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-
+#or (300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)
 FPS = 50
 size = WIDTH, HEIGHT = 800, 600
 clock = pygame.time.Clock()
@@ -23,6 +23,31 @@ def load_image(name, colorkey=None):
     else:
         image = image.convert_alpha()
     return image
+
+
+def print_text(massage, x, y, font_color=(255, 255, 255), font_type='data/PINGPONG.TTF', font_size=30):
+    font_type = pygame.font.Font(font_type, font_size)
+    text = font_type.render(massage, True, font_color)
+    screen.blit(text, (x, y))
+
+
+def start_game():
+    print(123456789)
+
+
+class Button:
+    def __init__(self, width, height, color):
+        self.width = width
+        self.height = height
+        self.color = color
+
+    def draw(self, x, y, massage, action=None):
+        mouse_clicked = pygame.mouse.get_pressed()
+        pygame.draw.rect(screen, self.color, (x, y, self.width, self.height))
+        print_text(massage, x + 40, y + 10)
+        if mouse_clicked[0] == 1:
+            if action is not None:
+                 action()
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
@@ -78,15 +103,19 @@ def terminate():
 
 
 def start_screen():
+    button1 = Button(200, 40, (255, 0, 0))
+    #button2 = Button(200, 40, (255, 0, 0))
     fon = pygame.transform.scale(load_image('fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
+    button1.draw(300, 390, '1 Player')
+    #button2.draw(300, 460, '2 Players')
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            elif event.type == pygame.KEYDOWN or \
-                    event.type == pygame.MOUSEBUTTONDOWN:
+            elif (event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN) \
+                    and ((300 < pygame.mouse.get_pos()[0] < 500 and 390 < pygame.mouse.get_pos()[1] < 450)):
                 return  # начинаем игру
         pygame.display.flip()
         clock.tick(FPS)
