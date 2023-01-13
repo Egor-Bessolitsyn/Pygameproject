@@ -1,7 +1,6 @@
 import pygame
 import os
 import sys
-import random
 #or (300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)
 #(300 < pygame.mouse.get_pos()[0] < 500 and 390 < pygame.mouse.get_pos()[1] < 450)
 FPS = 50
