@@ -1,8 +1,9 @@
 import pygame
 import os
 import sys
-#or (300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)
-#(300 < pygame.mouse.get_pos()[0] < 500 and 390 < pygame.mouse.get_pos()[1] < 450)
+
+# or (300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)
+# (300 < pygame.mouse.get_pos()[0] < 500 and 390 < pygame.mouse.get_pos()[1] < 450)
 FPS = 50
 size = WIDTH, HEIGHT = 800, 600
 clock = pygame.time.Clock()
@@ -48,7 +49,7 @@ class Button:
         print_text(massage, x + 40, y + 10)
         if mouse_clicked[0] == 1:
             if action is not None:
-                 action()
+                action()
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -191,7 +192,7 @@ if __name__ == '__main__':
             if event.type == pygame.KEYUP:
                 move = False
             all_sprites.update(event)
-        screen.fill((255, 255, 255))
+        screen.fill((110, 110, 110))
         if move:
             all_sprites.update(last_event)
         all_sprites.draw(screen)
