@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-#or (300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)
+
 FPS = 50
 size = WIDTH, HEIGHT = 800, 600
 clock = pygame.time.Clock()
@@ -104,18 +104,18 @@ def terminate():
 
 def start_screen():
     button1 = Button(200, 40, (255, 0, 0))
-    #button2 = Button(200, 40, (255, 0, 0))
+    button2 = Button(200, 40, (255, 0, 0))
     fon = pygame.transform.scale(load_image('fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     button1.draw(300, 390, '1 Player')
-    #button2.draw(300, 460, '2 Players')
+    button2.draw(300, 460, '2 Players')
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
             elif (event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN) \
-                    and ((300 < pygame.mouse.get_pos()[0] < 500 and 390 < pygame.mouse.get_pos()[1] < 450)):
+                    and ((300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)):
                 return  # начинаем игру
         pygame.display.flip()
         clock.tick(FPS)
