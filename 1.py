@@ -153,14 +153,19 @@ def terminate():
 def start_screen():
     button_sologame = Button(200, 40, (255, 0, 0))
     button_pvpgame = Button(200, 40, (255, 0, 0))
+    button_build = Button(200, 40, (255, 0, 0))
+    button_exit = Button(100, 20, (0, 0, 0))
     fon = pygame.transform.scale(load_image('fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     button_sologame.draw(300, 390, '1 Player')
-    button_pvpgame.draw(300, 460, '2 Players')
+    button_pvpgame.draw(300, 450, '2 Players')
+    button_build.draw(300, 510, 'Building')
+    button_exit.draw(700, 550, 'Exit')
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.MOUSEBUTTONDOWN and
+                                             (700 < pygame.mouse.get_pos()[0] < 800 and 550 < pygame.mouse.get_pos()[1] < 600)):
                 terminate()
             elif (event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN) \
                     and ((300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)):
