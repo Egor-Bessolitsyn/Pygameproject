@@ -70,6 +70,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = 200
         self.rect.y = 200
         self.tick_time = 0
+        self.bullet_delay = 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -81,6 +82,7 @@ class Enemy(pygame.sprite.Sprite):
                     frame_location, self.rect.size)))
 
     def update(self, *args):
+        clock = pygame.time.get_ticks()
         if args and args[0].type == pygame.KEYDOWN:
             self.tick_time += 1
             if self.tick_time % 10 == 1:
@@ -102,18 +104,20 @@ class Enemy(pygame.sprite.Sprite):
                 self.image = self.frames[self.cur_frame]
                 self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_KP0]:
-                if self.cur_frame == 0:
-                    Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14 + 1,
-                           self.cur_frame, self.rect)
-                elif self.cur_frame == 1:
-                    Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50 - 1,
-                           self.cur_frame, self.rect)
-                elif self.cur_frame == 2:
-                    Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50 - 1, self.rect.y + 18,
-                           self.cur_frame, self.rect)
-                elif self.cur_frame == 3:
-                    Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14 + 1, self.rect.y + 18,
-                           self.cur_frame, self.rect)
+                if clock - self.bullet_delay >= 1000:
+                    self.bullet_delay = clock
+                    if self.cur_frame == 0:
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14 + 1,
+                               self.cur_frame, self.rect)
+                    elif self.cur_frame == 1:
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50 - 1,
+                               self.cur_frame, self.rect)
+                    elif self.cur_frame == 2:
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50 - 1, self.rect.y + 18,
+                               self.cur_frame, self.rect)
+                    elif self.cur_frame == 3:
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14 + 1, self.rect.y + 18,
+                               self.cur_frame, self.rect)
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
@@ -128,6 +132,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.rect.x = 100
         self.rect.y = 100
         self.tick_time = 0
+        self.bullet_delay = 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -139,6 +144,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
                     frame_location, self.rect.size)))
 
     def update(self, *args):
+        clock = pygame.time.get_ticks()
         if args and args[0].type == pygame.KEYDOWN:
             self.tick_time += 1
             if self.tick_time % 10 == 1:
@@ -160,18 +166,20 @@ class AnimatedSprite(pygame.sprite.Sprite):
                 self.image = self.frames[self.cur_frame]
                 self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_SPACE]:
-                if self.cur_frame == 0:
-                    Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14 + 1,
-                           self.cur_frame, self.rect)
-                elif self.cur_frame == 1:
-                    Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50 - 1,
-                           self.cur_frame, self.rect)
-                elif self.cur_frame == 2:
-                    Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50 - 1, self.rect.y + 18,
-                           self.cur_frame, self.rect)
-                elif self.cur_frame == 3:
-                    Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14 + 1, self.rect.y + 18,
-                           self.cur_frame, self.rect)
+                if clock - self.bullet_delay >= 1000:
+                    self.bullet_delay = clock
+                    if self.cur_frame == 0:
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14 + 1,
+                               self.cur_frame, self.rect)
+                    elif self.cur_frame == 1:
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50 - 1,
+                               self.cur_frame, self.rect)
+                    elif self.cur_frame == 2:
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50 - 1, self.rect.y + 18,
+                               self.cur_frame, self.rect)
+                    elif self.cur_frame == 3:
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14 + 1, self.rect.y + 18,
+                               self.cur_frame, self.rect)
 
 
 class Bullet(pygame.sprite.Sprite):
