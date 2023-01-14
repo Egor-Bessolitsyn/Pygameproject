@@ -53,13 +53,14 @@ class Button:
                 action()
 
 
-class Enemy(pygame.sprite.Sprite):
+class Tank_2_pdrl(pygame.sprite.Sprite):
     def __init__(self, sheet, columns, rows, x, y):
         super().__init__(tanks_sprites)
         self.frames = []
         self.cut_sheet(sheet, columns, rows)
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.rect.move(x, y)
         self.rect = self.image.get_rect()
         self.rect.x = 200
@@ -99,29 +100,30 @@ class Enemy(pygame.sprite.Sprite):
                 self.image = self.frames[self.cur_frame]
                 self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_KP0]:
-                if clock - self.bullet_delay >= 1000:
+                if clock - self.bullet_delay >= 500:
                     self.bullet_delay = clock
                     if self.cur_frame == 0:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14 + 1,
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14,
                                self.cur_frame, self.rect)
                     elif self.cur_frame == 1:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50 - 1,
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50,
                                self.cur_frame, self.rect)
                     elif self.cur_frame == 2:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50 - 1, self.rect.y + 18,
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50, self.rect.y + 18,
                                self.cur_frame, self.rect)
                     elif self.cur_frame == 3:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14 + 1, self.rect.y + 18,
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14, self.rect.y + 18,
                                self.cur_frame, self.rect)
 
 
-class AnimatedSprite(pygame.sprite.Sprite):
+class Tank_WASD(pygame.sprite.Sprite):
     def __init__(self, sheet, columns, rows, x, y):
         super().__init__(tanks_sprites)
         self.frames = []
         self.cut_sheet(sheet, columns, rows)
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.rect.move(x, y)
         self.rect = self.image.get_rect()
         self.rect.x = 100
@@ -161,19 +163,19 @@ class AnimatedSprite(pygame.sprite.Sprite):
                 self.image = self.frames[self.cur_frame]
                 self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_SPACE]:
-                if clock - self.bullet_delay >= 1000:
+                if clock - self.bullet_delay >= 500:
                     self.bullet_delay = clock
                     if self.cur_frame == 0:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14 + 1,
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14,
                                self.cur_frame, self.rect)
                     elif self.cur_frame == 1:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50 - 1,
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50,
                                self.cur_frame, self.rect)
                     elif self.cur_frame == 2:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50 - 1, self.rect.y + 18,
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50, self.rect.y + 18,
                                self.cur_frame, self.rect)
                     elif self.cur_frame == 3:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14 + 1, self.rect.y + 18,
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14, self.rect.y + 18,
                                self.cur_frame, self.rect)
 
 
@@ -201,8 +203,8 @@ class Bullet(pygame.sprite.Sprite):
                     frame_location, self.rect.size)))
 
     def update(self, *args):
-        # print(pygame.time.Clock.tick())
-        if not self.rect.colliderect(screen_rect):
+        if not self.rect.colliderect(screen_rect) or pygame.sprite.collide_mask(self, tanks_sprites.sprites()[0]) \
+                or pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
             self.kill()
         else:
             self.tick_time += 1
@@ -255,8 +257,8 @@ if __name__ == '__main__':
     start_screen()
 
     tanks_sprites = pygame.sprite.Group()
-    tank = AnimatedSprite(load_image("yellow_tanks.png"), 4, 1, 50, 50)
-    enemy = Enemy(load_image("yellow_tanks.png"), 4, 1, 50, 50)
+    tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50)
+    tank_2 = Tank_2_pdrl(load_image("yellow_tanks.png"), 4, 1, 50, 50)
 
     bullet_sprites = pygame.sprite.Group()
 
