@@ -109,16 +109,16 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                     self.bullet_delay = clock
                     if self.cur_frame == 0:
                         Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14,
-                               self.cur_frame, self.rect)
+                               self.cur_frame)
                     elif self.cur_frame == 1:
                         Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50,
-                               self.cur_frame, self.rect)
+                               self.cur_frame)
                     elif self.cur_frame == 2:
                         Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50, self.rect.y + 18,
-                               self.cur_frame, self.rect)
+                               self.cur_frame)
                     elif self.cur_frame == 3:
                         Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14, self.rect.y + 18,
-                               self.cur_frame, self.rect)
+                               self.cur_frame)
 
 
 class Tank_WASD(pygame.sprite.Sprite):
@@ -172,22 +172,21 @@ class Tank_WASD(pygame.sprite.Sprite):
                     self.bullet_delay = clock
                     if self.cur_frame == 0:
                         Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14,
-                               self.cur_frame, self.rect)
+                               self.cur_frame)
                     elif self.cur_frame == 1:
                         Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50,
-                               self.cur_frame, self.rect)
+                               self.cur_frame)
                     elif self.cur_frame == 2:
                         Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50, self.rect.y + 18,
-                               self.cur_frame, self.rect)
+                               self.cur_frame)
                     elif self.cur_frame == 3:
                         Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14, self.rect.y + 18,
-                               self.cur_frame, self.rect)
+                               self.cur_frame)
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, sheet, columns, rows, x, y, cur_frame, animatedSprite_rect):
+    def __init__(self, sheet, columns, rows, x, y, cur_frame):
         super().__init__(bullet_sprites)
-        self.animatedSprite_rect = animatedSprite_rect
         self.frames = []
         self.cut_sheet(sheet, columns, rows)
         self.cur_frame = cur_frame
