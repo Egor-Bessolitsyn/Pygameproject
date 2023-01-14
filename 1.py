@@ -39,14 +39,19 @@ def start_game():
 
 
 class Button:
-    def __init__(self, width, height, color):
+    def __init__(self, width, height, color, active_color):
         self.width = width
         self.height = height
         self.color = color
+        self.active_color = active_color
 
     def draw(self, x, y, massage, action=None):
         mouse_clicked = pygame.mouse.get_pressed()
-        pygame.draw.rect(screen, self.color, (x, y, self.width, self.height))
+        mouse_pos = pygame.mouse.get_pos()
+        if x < mouse_pos[0] < (x + self.width) and y < mouse_pos[1] < (y + self.height):
+            pygame.draw.rect(screen, self.active_color, (x, y, self.width, self.height))
+        else:
+            pygame.draw.rect(screen, self.color, (x, y, self.width, self.height))
         print_text(massage, x + 40, y + 10)
         if mouse_clicked[0] == 1:
             if action is not None:
@@ -229,19 +234,20 @@ def start_screen():
     fon = pygame.transform.scale(load_image('fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
 
-    button_sologame = Button(200, 40, (255, 0, 0))
-    button_sologame.draw(300, 390, '1 Player')
-
-    button_pvpgame = Button(200, 40, (255, 0, 0))
-    button_pvpgame.draw(300, 450, '2 Players')
-
-    button_build = Button(200, 40, (255, 0, 0))
-    button_build.draw(300, 510, 'Building')
-
-    button_exit = Button(100, 20, (0, 0, 0))
-    button_exit.draw(700, 550, 'Exit')
-
     while True:
+        button_sologame = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        button_sologame.draw(300, 390, '1 Player')
+
+        button_pvpgame = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        button_pvpgame.draw(300, 450, '2 Players')
+
+        button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        button_build.draw(300, 510, 'Building')
+
+        button_exit = Button(100, 40, (0, 0, 0), (50, 50, 50))
+        button_exit.draw(699, 559, 'Exit')
+
+        pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.MOUSEBUTTONDOWN and
                                              (700 < pygame.mouse.get_pos()[0] < 800 and 550 < pygame.mouse.get_pos()[
