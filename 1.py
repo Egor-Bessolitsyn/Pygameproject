@@ -22,6 +22,8 @@ def start_game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                pygame.quit()
+                quit()
             if event.type == pygame.KEYDOWN:
                 move = True
                 last_event = event
@@ -75,9 +77,10 @@ def cards_menu():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 show = False
+                pygame.quit()
+                quit()
             if event.type == pygame.MOUSEBUTTONDOWN and \
                     (0 < pygame.mouse.get_pos()[0] < 800 and 460 < pygame.mouse.get_pos()[1] < 500):
-                show = False
                 return
 
 
@@ -315,10 +318,6 @@ def start_screen():
 
 
 if __name__ == '__main__':
-    start_screen()
-    cards_menu()
-    start_game()
-
     card_sprites = pygame.sprite.Group()
     bullet_sprites = pygame.sprite.Group()
     tanks_sprites = pygame.sprite.Group()
@@ -326,4 +325,8 @@ if __name__ == '__main__':
     tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50)
     tank_2 = Tank_2_pdrl(load_image("yellow_tanks.png"), 4, 1, 50, 50)
 
+    start_screen()
+    cards_menu()
+    start_game()
 pygame.quit()
+
