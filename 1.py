@@ -116,17 +116,21 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                 if clock - self.bullet_delay >= 500:
                     self.bullet_delay = clock
                     if self.cur_frame == 0:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14,
-                               self.cur_frame)
+                        Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y - 28, self.cur_frame)
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1,
+                               self.rect.x + 18, self.rect.y - 14, self.cur_frame)
                     elif self.cur_frame == 1:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50,
-                               self.cur_frame)
+                        Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y + 50, self.cur_frame)
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1,
+                               self.rect.x + 18, self.rect.y + 50, self.cur_frame)
                     elif self.cur_frame == 2:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50, self.rect.y + 18,
-                               self.cur_frame)
+                        Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 50, self.rect.y + 11, self.cur_frame)
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1,
+                               self.rect.x + 50, self.rect.y + 18, self.cur_frame)
                     elif self.cur_frame == 3:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14, self.rect.y + 18,
-                               self.cur_frame)
+                        Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x - 28, self.rect.y + 11, self.cur_frame)
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1,
+                               self.rect.x - 14, self.rect.y + 18, self.cur_frame)
 
 
 class Tank_WASD(pygame.sprite.Sprite):
@@ -187,17 +191,57 @@ class Tank_WASD(pygame.sprite.Sprite):
                 if clock - self.bullet_delay >= 500:
                     self.bullet_delay = clock
                     if self.cur_frame == 0:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y - 14,
-                               self.cur_frame)
+                        Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y - 28, self.cur_frame)
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1,
+                               self.rect.x + 18, self.rect.y - 14, self.cur_frame)
                     elif self.cur_frame == 1:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 18, self.rect.y + 50,
-                               self.cur_frame)
+                        Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y + 50, self.cur_frame)
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1,
+                               self.rect.x + 18, self.rect.y + 50, self.cur_frame)
                     elif self.cur_frame == 2:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x + 50, self.rect.y + 18,
-                               self.cur_frame)
+                        Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 50, self.rect.y + 11, self.cur_frame)
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1,
+                               self.rect.x + 50, self.rect.y + 18, self.cur_frame)
                     elif self.cur_frame == 3:
-                        Bullet(load_image("Bullet_sprite.png"), 4, 1, self.rect.x - 14, self.rect.y + 18,
-                               self.cur_frame)
+                        Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x - 28, self.rect.y + 11, self.cur_frame)
+                        Bullet(load_image("Bullet_sprite.png"), 4, 1,
+                               self.rect.x - 14, self.rect.y + 18, self.cur_frame)
+
+
+class Shot(pygame.sprite.Sprite):
+    def __init__(self, sheet, columns, rows, x, y, cur_frame):
+        super().__init__(bullet_sprites)
+        self.frames = []
+        self.cut_sheet(sheet, columns, rows)
+        self.cur_frame = cur_frame
+        self.cur_frame_r = 0
+        self.image = self.frames[self.cur_frame][self.cur_frame_r]
+        self.rect = self.rect.move(x, y)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.tick_time = 1
+
+    def cut_sheet(self, sheet, columns, rows):
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
+                                sheet.get_height() // rows)
+        for j in range(rows):
+            frames_rows = []
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                frames_rows.append(sheet.subsurface(pygame.Rect(
+                    frame_location, self.rect.size)))
+            self.frames.append(frames_rows)
+
+    def update(self, *args):
+        if not self.tick_time % 10:
+            self.tick_time = 1
+            self.cur_frame_r = (self.cur_frame_r + 1) % len(self.frames[self.cur_frame])
+            self.image = self.frames[self.cur_frame][self.cur_frame_r]
+            if self.cur_frame_r == 5:
+                self.kill()
+        else:
+            self.tick_time += 1
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -211,7 +255,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.tick_time = 0
+        # self.tick_time = 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -227,17 +271,17 @@ class Bullet(pygame.sprite.Sprite):
                 or pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
             self.kill()
         else:
-            self.tick_time += 1
-        if self.tick_time % 3 == 1:
-            self.tick_time %= 3
-        if self.cur_frame == 0:
-            self.rect.y -= 2
-        elif self.cur_frame == 1:
-            self.rect.y += 2
-        elif self.cur_frame == 2:
-            self.rect.x += 2
-        elif self.cur_frame == 3:
-            self.rect.x -= 2
+            #     self.tick_time += 1
+            # if self.tick_time % 3 == 1:
+            #     self.tick_time %= 3
+            if self.cur_frame == 0:
+                self.rect.y -= 2
+            elif self.cur_frame == 1:
+                self.rect.y += 2
+            elif self.cur_frame == 2:
+                self.rect.x += 2
+            elif self.cur_frame == 3:
+                self.rect.x -= 2
 
 
 def terminate():
