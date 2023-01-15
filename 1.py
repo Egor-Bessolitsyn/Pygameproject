@@ -14,6 +14,10 @@ screen = pygame.display.set_mode(size)
 
 def start_game():
     global tanks_sprites, bullet_sprites
+    pygame.display.set_caption("Tanks")
+    player1, player2, level_x, level_y = generate_level(load_level('level01.txt'))
+    size = (level_x + 1) * tile_width, (level_y + 1) * tile_height
+    screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
     move = False
     last_event = None
@@ -36,8 +40,18 @@ def start_game():
         tanks_sprites.draw(screen)
         bullet_sprites.update()
         bullet_sprites.draw(screen)
+        all_sprites.update()
+        screen.fill((255, 255, 255))
+        all_sprites.draw(screen)
+        tanks_sprites.draw(screen)
+        pygame.display.flip()
         clock.tick(FPS)
         pygame.display.flip()
+
+
+def end_game():
+    pygame.quit()
+    quit()
 
 
 def load_image(name, colorkey=None):
@@ -82,6 +96,38 @@ def cards_menu():
             if event.type == pygame.MOUSEBUTTONDOWN and \
                     (0 < pygame.mouse.get_pos()[0] < 800 and 460 < pygame.mouse.get_pos()[1] < 500):
                 return
+
+
+def load_level(filename):
+    filename = "data/" + filename
+    # читаем уровень, убирая символы перевода строки
+    with open(filename, 'r') as mapFile:
+        level_map = [line.strip() for line in mapFile]
+
+    # и подсчитываем максимальную длину
+    max_width = max(map(len, level_map))
+
+    # дополняем каждую строку пустыми клетками ('.')
+    return list(map(lambda x: x.ljust(max_width, '0'), level_map))
+
+
+tile_images = {
+    'wall': load_image('brick_cell.png'),
+    'empty': load_image('null_cell.png'),
+    'indestructible_wall': load_image('iron_cell.png')
+}
+
+tile_width = tile_height = 50
+
+
+class Tile(pygame.sprite.Sprite):
+    def __init__(self, tile_type, pos_x, pos_y):
+        super().__init__(tiles_group, all_sprites)
+        self.image = tile_images[tile_type]
+        if tile_type == 'wall':
+            self.add(wall_group)
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x, tile_height * pos_y)
 
 
 class Button:
@@ -186,7 +232,7 @@ class Tank_WASD(pygame.sprite.Sprite):
         self.rect = self.rect.move(x, y)
         self.rect = self.image.get_rect()
         self.rect.x = 100
-        self.rect.y = 100
+        self.rect.y = 150
         self.tick_time = 0
         self.bullet_delay = 0
 
@@ -306,27 +352,40 @@ def start_screen():
         button_build.draw(300, 510, 'Building')
 
         button_exit = Button(100, 40, (0, 0, 0), (50, 50, 50))
-        button_exit.draw(699, 559, 'Exit')
+        button_exit.draw(699, 559, 'Exit', end_game)
 
         pygame.display.update()
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.MOUSEBUTTONDOWN and
-                                             (700 < pygame.mouse.get_pos()[0] < 800 and 550 < pygame.mouse.get_pos()[
-                                                 1] < 600)):
+            if event.type == pygame.QUIT:
                 terminate()
         pygame.display.flip()
 
 
+def generate_level(level):
+    tank_1, tank_2, x, y = None, None, None, None
+    for y in range(len(level)):
+        for x in range(len(level[y])):
+            if level[y][x] == '0':
+                Tile('empty', x, y)
+            elif level[y][x] == '1':
+                Tile('wall', x, y)
+            elif level[y][x] == 'T':
+                Tile('empty', x, y)
+                tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50)
+            elif level[y][x] == 't':
+                Tile('empty', x, y)
+                tank_2 = Tank_2_pdrl(load_image("yellow_tanks.png"), 4, 1, 50, 50)
+    return tank_1, tank_2, x, y
+
+
 if __name__ == '__main__':
-    card_sprites = pygame.sprite.Group()
+    tiles_group = pygame.sprite.Group()
+    all_sprites = pygame.sprite.Group()
+    wall_group = pygame.sprite.Group()
     bullet_sprites = pygame.sprite.Group()
     tanks_sprites = pygame.sprite.Group()
-
-    tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50)
-    tank_2 = Tank_2_pdrl(load_image("yellow_tanks.png"), 4, 1, 50, 50)
 
     start_screen()
     cards_menu()
     start_game()
 pygame.quit()
-
