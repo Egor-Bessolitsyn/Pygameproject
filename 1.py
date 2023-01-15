@@ -12,6 +12,34 @@ pygame.init()
 screen = pygame.display.set_mode(size)
 
 
+def start_game():
+    global tanks_sprites, bullet_sprites
+    clock = pygame.time.Clock()
+    move = False
+    last_event = None
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                move = True
+                last_event = event
+            if event.type == pygame.KEYUP:
+                move = False
+            tanks_sprites.update(event)
+        screen.fill((110, 110, 110))
+        if move:
+            tanks_sprites.update(last_event)
+        tanks_sprites.draw(screen)
+        bullet_sprites.update()
+        bullet_sprites.draw(screen)
+        clock.tick(FPS)
+        pygame.display.flip()
+
+
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
@@ -34,8 +62,26 @@ def print_text(massage, x, y, font_color=(255, 255, 255), font_type='data/PINGPO
     screen.blit(text, (x, y))
 
 
-def start_game():
-    print(123456789)
+def cards_menu():
+    fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
+    screen.blit(fon, (0, 0))
+    show = True
+    while show:
+        pygame.display.set_caption("Menu")
+        card1 = Button(100, 100, (255, 0, 0), (150, 0, 0))
+        menu = pygame.Surface(size)
+        screen.blit(menu, (0, 0))
+        card1.draw(100, 100, 'Card1', start_game)
+        # print(card_sprites.sprites())
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                show = False
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN and \
+                    (0 < pygame.mouse.get_pos()[0] < 800 and 460 < pygame.mouse.get_pos()[1] < 500):
+                return
 
 
 class Button:
@@ -50,12 +96,12 @@ class Button:
         mouse_pos = pygame.mouse.get_pos()
         if x < mouse_pos[0] < (x + self.width) and y < mouse_pos[1] < (y + self.height):
             pygame.draw.rect(screen, self.active_color, (x, y, self.width, self.height))
+            if mouse_clicked[0] == 1:
+                if action is not None:
+                    action()
         else:
             pygame.draw.rect(screen, self.color, (x, y, self.width, self.height))
-        print_text(massage, x + 40, y + 10)
-        if mouse_clicked[0] == 1:
-            if action is not None:
-                action()
+        print_text(massage, x - len(massage) * 7 + self.width // 2, y + self.height // 3)
 
 
 class Tank_2_pdrl(pygame.sprite.Sprite):
@@ -298,7 +344,7 @@ def start_screen():
         button_sologame.draw(300, 390, '1 Player')
 
         button_pvpgame = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        button_pvpgame.draw(300, 450, '2 Players')
+        button_pvpgame.draw(300, 450, '2 Players', cards_menu)
 
         button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
         button_build.draw(300, 510, 'Building')
@@ -312,41 +358,19 @@ def start_screen():
                                              (700 < pygame.mouse.get_pos()[0] < 800 and 550 < pygame.mouse.get_pos()[
                                                  1] < 600)):
                 terminate()
-            elif (event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN) \
-                    and (300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500):
-                return  # начинаем игру
         pygame.display.flip()
 
 
 if __name__ == '__main__':
-    start_screen()
-
+    card_sprites = pygame.sprite.Group()
+    bullet_sprites = pygame.sprite.Group()
     tanks_sprites = pygame.sprite.Group()
+
     tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50)
     tank_2 = Tank_2_pdrl(load_image("yellow_tanks.png"), 4, 1, 50, 50)
 
-    bullet_sprites = pygame.sprite.Group()
+    start_screen()
+    cards_menu()
+    start_game()
+pygame.quit()
 
-    clock = pygame.time.Clock()
-    move = False
-    last_event = None
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                move = True
-                last_event = event
-            if event.type == pygame.KEYUP:
-                move = False
-            tanks_sprites.update(event)
-        screen.fill((110, 110, 110))
-        if move:
-            tanks_sprites.update(last_event)
-        tanks_sprites.draw(screen)
-        bullet_sprites.update()
-        bullet_sprites.draw(screen)
-        clock.tick(FPS)
-        pygame.display.flip()
-    pygame.quit()
