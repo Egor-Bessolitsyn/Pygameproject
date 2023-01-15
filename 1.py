@@ -81,10 +81,18 @@ def cards_menu():
     show = True
     while show:
         pygame.display.set_caption("Menu")
-        card1 = Button(100, 100, (255, 0, 0), (150, 0, 0))
+        card1 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        card2 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        card3 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        card4 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        card5 = Button(150, 150, (255, 0, 0), (150, 0, 0))
         menu = pygame.Surface(size)
         screen.blit(menu, (0, 0))
         card1.draw(100, 100, 'Card1', start_game)
+        card2.draw(300, 100, 'Card2', start_game)
+        card3.draw(500, 100, 'Card3', start_game)
+        card4.draw(100, 300, 'Card4', start_game)
+        card5.draw(300, 300, 'Card5', start_game)
         # print(card_sprites.sprites())
         pygame.display.update()
         for event in pygame.event.get():
