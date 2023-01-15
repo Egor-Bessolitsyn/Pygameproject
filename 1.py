@@ -32,16 +32,13 @@ def start_game():
             if event.type == pygame.KEYUP:
                 move = False
             tanks_sprites.update(event)
-        screen.fill((110, 110, 110))
+        all_sprites.update()
+        all_sprites.draw(screen)
         if move:
             tanks_sprites.update(last_event)
         tanks_sprites.draw(screen)
         bullet_sprites.update()
         bullet_sprites.draw(screen)
-        all_sprites.update()
-        screen.fill((255, 255, 255))
-        all_sprites.draw(screen)
-        tanks_sprites.draw(screen)
         pygame.display.flip()
         clock.tick(FPS)
         pygame.display.flip()
