@@ -13,9 +13,8 @@ screen = pygame.display.set_mode(size)
 
 
 def start_game():
-    global tanks_sprites, bullet_sprites
     pygame.display.set_caption("Tanks")
-    player1, player2, level_x, level_y = generate_level(load_level('level01.txt'))
+    player1, player2, level_x, level_y = generate_level(load_level('Card1.txt'))
     size = (level_x + 1) * tile_width, (level_y + 1) * tile_height
     screen = pygame.display.set_mode(size)
     move = False
@@ -131,7 +130,7 @@ class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(tiles_group, all_sprites)
         self.image = tile_images[tile_type]
-        if tile_type == 'wall':
+        if tile_type == 'wall' or tile_type == 'indestructible_wall':
             self.add(wall_group)
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
@@ -439,6 +438,4 @@ if __name__ == '__main__':
     tanks_sprites = pygame.sprite.Group()
 
     start_screen()
-    cards_menu()
-    start_game()
 pygame.quit()
