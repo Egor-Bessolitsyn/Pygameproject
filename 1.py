@@ -18,7 +18,6 @@ def start_game():
     player1, player2, level_x, level_y = generate_level(load_level('level01.txt'))
     size = (level_x + 1) * tile_width, (level_y + 1) * tile_height
     screen = pygame.display.set_mode(size)
-    clock = pygame.time.Clock()
     move = False
     last_event = None
     running = True
@@ -419,6 +418,8 @@ def generate_level(level):
             elif level[y][x] == 't':
                 Tile('empty', x, y)
                 tank_2 = Tank_2_pdrl(load_image("yellow_tanks.png"), 4, 1, 50, 50)
+            elif level[y][x] == '2':
+                Tile('indestructible_wall', x, y)
     return tank_1, tank_2, x, y
 
 
