@@ -373,4 +373,3 @@ if __name__ == '__main__':
     cards_menu()
     start_game()
 pygame.quit()
-
