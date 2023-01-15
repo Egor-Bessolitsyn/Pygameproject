@@ -13,9 +13,8 @@ screen = pygame.display.set_mode(size)
 
 
 def start_game():
-    global tanks_sprites, bullet_sprites
     pygame.display.set_caption("Tanks")
-    player1, player2, level_x, level_y = generate_level(load_level('level01.txt'))
+    player1, player2, level_x, level_y = generate_level(load_level('Card1.txt'))
     size = (level_x + 1) * tile_width, (level_y + 1) * tile_height
     screen = pygame.display.set_mode(size)
     move = False
@@ -81,10 +80,18 @@ def cards_menu():
     show = True
     while show:
         pygame.display.set_caption("Menu")
-        card1 = Button(100, 100, (255, 0, 0), (150, 0, 0))
+        card1 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        card2 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        card3 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        card4 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        card5 = Button(150, 150, (255, 0, 0), (150, 0, 0))
         menu = pygame.Surface(size)
         screen.blit(menu, (0, 0))
         card1.draw(100, 100, 'Card1', start_game)
+        card2.draw(300, 100, 'Card2', start_game)
+        card3.draw(500, 100, 'Card3', start_game)
+        card4.draw(100, 300, 'Card4', start_game)
+        card5.draw(300, 300, 'Card5', start_game)
         # print(card_sprites.sprites())
         pygame.display.update()
         for event in pygame.event.get():
@@ -123,7 +130,7 @@ class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(tiles_group, all_sprites)
         self.image = tile_images[tile_type]
-        if tile_type == 'wall':
+        if tile_type == 'wall' or tile_type == 'indestructible_wall':
             self.add(wall_group)
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
@@ -431,6 +438,4 @@ if __name__ == '__main__':
     tanks_sprites = pygame.sprite.Group()
 
     start_screen()
-    cards_menu()
-    start_game()
 pygame.quit()
