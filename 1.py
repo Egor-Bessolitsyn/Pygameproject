@@ -14,6 +14,7 @@ screen = pygame.display.set_mode(size)
 
 
 def start_game():
+    global player1, player2
     pygame.display.set_caption("Tanks")
     player1, player2, level_x, level_y = generate_level(load_level('Card1.txt'))
     size = (level_x + 1) * tile_width, (level_y + 1) * tile_height
@@ -168,6 +169,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         self.rect.y = 200
         self.tick_time = 0
         self.bullet_delay = 0
+        self.count_shot = 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -181,6 +183,14 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
     def create_mask(self):
         self.image = self.frames[self.cur_frame]
         self.mask = pygame.mask.from_surface(self.image)
+
+    def count_live(self):
+        self.count_shot += 1
+        if self.count_shot == 3:
+            self.Tank_kill()
+
+    def Tank_kill(self):
+        self.kill()
 
     def update(self, *args):
         clock = pygame.time.get_ticks()
@@ -247,6 +257,7 @@ class Tank_WASD(pygame.sprite.Sprite):
         self.rect.y = 150
         self.tick_time = 0
         self.bullet_delay = 0
+        self.count_shot = 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -260,6 +271,14 @@ class Tank_WASD(pygame.sprite.Sprite):
     def create_mask(self):
         self.image = self.frames[self.cur_frame]
         self.mask = pygame.mask.from_surface(self.image)
+
+    def count_live(self):
+        self.count_shot += 1
+        if self.count_shot == 3:
+            self.Tank_kill()
+
+    def Tank_kill(self):
+        self.kill()
 
     def update(self, *args):
         clock = pygame.time.get_ticks()
@@ -359,7 +378,6 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        # self.tick_time = 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -371,13 +389,16 @@ class Bullet(pygame.sprite.Sprite):
                     frame_location, self.rect.size)))
 
     def update(self, *args):
-        if not self.rect.colliderect(screen_rect) or pygame.sprite.collide_mask(self, tanks_sprites.sprites()[0]) \
-                or pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
+        if not self.rect.colliderect(screen_rect):
             self.kill()
+        elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[0]):
+            self.kill()
+            player1.count_live()
+        elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
+            self.kill()
+            player2.count_live()
+
         else:
-            #     self.tick_time += 1
-            # if self.tick_time % 3 == 1:
-            #     self.tick_time %= 3
             if self.cur_frame == 0:
                 self.rect.y -= 2
             elif self.cur_frame == 1:
