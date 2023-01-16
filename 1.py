@@ -196,6 +196,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
+        end_screen()
 
     def update(self, *args):
         clock = pygame.time.get_ticks()
@@ -284,6 +285,7 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
+        end_screen()
 
     def update(self, *args):
         clock = pygame.time.get_ticks()
@@ -441,6 +443,18 @@ def start_screen():
             if event.type == pygame.QUIT:
                 terminate()
         pygame.display.flip()
+
+
+def end_screen():
+    fon = pygame.transform.scale(load_image('victory.png'), (600, 600))
+    screen.blit(fon, (0, 0))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+        pygame.display.flip()
+        clock.tick(FPS)
 
 
 def generate_level(level):
