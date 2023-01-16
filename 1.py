@@ -77,24 +77,24 @@ def print_text(massage, x, y, font_color=(255, 255, 255), font_type='data/PINGPO
     screen.blit(text, (x, y))
 
 
-def cards_menu():
+def maps_menu():
     fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     show = True
     while show:
         pygame.display.set_caption("Menu")
-        card1 = Button(150, 150, (255, 0, 0), (150, 0, 0))
-        card2 = Button(150, 150, (255, 0, 0), (150, 0, 0))
-        card3 = Button(150, 150, (255, 0, 0), (150, 0, 0))
-        card4 = Button(150, 150, (255, 0, 0), (150, 0, 0))
-        card5 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        map1 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        map2 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        map3 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        map4 = Button(150, 150, (255, 0, 0), (150, 0, 0))
+        map5 = Button(150, 150, (255, 0, 0), (150, 0, 0))
         menu = pygame.Surface(size)
         screen.blit(menu, (0, 0))
-        card1.draw(100, 100, 'Card1', start_game)
-        card2.draw(300, 100, 'Card2', start_game)
-        card3.draw(500, 100, 'Card3', start_game)
-        card4.draw(100, 300, 'Card4', start_game)
-        card5.draw(300, 300, 'Card5', start_game)
+        map1.draw(100, 100, 'Map1', start_game)
+        map2.draw(300, 100, 'Map2', start_game)
+        map3.draw(500, 100, 'Map3', start_game)
+        map4.draw(100, 300, 'Map4', start_game)
+        map5.draw(300, 300, 'Map5', start_game)
         # print(card_sprites.sprites())
         pygame.display.update()
         for event in pygame.event.get():
@@ -196,6 +196,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
+        end_screen()
 
     def update(self, *args):
         clock = pygame.time.get_ticks()
@@ -284,6 +285,7 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
+        end_screen()
 
     def update(self, *args):
         clock = pygame.time.get_ticks()
@@ -427,7 +429,7 @@ def start_screen():
         button_sologame.draw(300, 390, '1 Player')
 
         button_pvpgame = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        button_pvpgame.draw(300, 450, '2 Players', cards_menu)
+        button_pvpgame.draw(300, 450, '2 Players', maps_menu)
 
         button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
         button_build.draw(300, 510, 'Building')
@@ -440,6 +442,18 @@ def start_screen():
             if event.type == pygame.QUIT:
                 terminate()
         pygame.display.flip()
+
+
+def end_screen():
+    fon = pygame.transform.scale(load_image('victory.png'), (600, 600))
+    screen.blit(fon, (0, 0))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+        pygame.display.flip()
+        clock.tick(FPS)
 
 
 def generate_level(level):
