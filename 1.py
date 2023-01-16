@@ -13,6 +13,7 @@ pygame.init()
 screen = pygame.display.set_mode(size)
 pygame.mixer.music.load("data/Music_of_game.mp3")
 pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(0.2)
 button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
 
 
