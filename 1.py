@@ -11,6 +11,9 @@ screen_rect = (0, 0, WIDTH, HEIGHT)
 clock = pygame.time.Clock()
 pygame.init()
 screen = pygame.display.set_mode(size)
+pygame.mixer.music.load("data/Music_of_game.mp3")
+pygame.mixer.music.play(-1)
+button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
 
 
 def start_game():
@@ -148,6 +151,7 @@ class Button:
             pygame.draw.rect(screen, self.active_color, (x, y, self.width, self.height))
             if mouse_clicked[0] == 1:
                 if action is not None:
+                    pygame.mixer.Sound.play(button_sound)
                     action()
         else:
             pygame.draw.rect(screen, self.color, (x, y, self.width, self.height))
