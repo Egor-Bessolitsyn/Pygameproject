@@ -402,7 +402,6 @@ class Bullet(pygame.sprite.Sprite):
         elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
             self.kill()
             player2.count_live()
-
         else:
             if self.cur_frame == 0:
                 self.rect.y -= 2
