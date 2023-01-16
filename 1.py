@@ -188,26 +188,30 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
             self.tick_time += 1
             if self.tick_time % 10 == 1:
                 self.tick_time %= 10
-            if pygame.key.get_pressed()[pygame.K_UP] and self.rect.y > 0:
+            if pygame.key.get_pressed()[pygame.K_UP]:
                 self.cur_frame = 0
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                self.rect.y -= 1
-            elif pygame.key.get_pressed()[pygame.K_DOWN] and self.rect.y < 500:
+                if self.rect.y > 0:
+                    self.rect.y -= 1
+            elif pygame.key.get_pressed()[pygame.K_DOWN]:
                 self.cur_frame = 1
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                self.rect.y += 1
-            elif pygame.key.get_pressed()[pygame.K_RIGHT] and self.rect.x < 550:
+                if self.rect.y < 500:
+                    self.rect.y += 1
+            elif pygame.key.get_pressed()[pygame.K_RIGHT]:
                 self.cur_frame = 2
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                self.rect.x += 1
-            elif pygame.key.get_pressed()[pygame.K_LEFT] and self.rect.x > 0:
+                if self.rect.x < 550:
+                    self.rect.x += 1
+            elif pygame.key.get_pressed()[pygame.K_LEFT]:
                 self.cur_frame = 3
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                self.rect.x -= 1
+                if self.rect.x > 0:
+                    self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_KP0]:
                 if clock - self.bullet_delay >= 500:
                     self.bullet_delay = clock
@@ -263,26 +267,30 @@ class Tank_WASD(pygame.sprite.Sprite):
             self.tick_time += 1
             if self.tick_time % 10 == 1:
                 self.tick_time %= 10
-            if pygame.key.get_pressed()[pygame.K_w] and self.rect.y > 0:
+            if pygame.key.get_pressed()[pygame.K_w]:
                 self.cur_frame = 0
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                self.rect.y -= 1
-            elif pygame.key.get_pressed()[pygame.K_s] and self.rect.y < 500:
+                if self.rect.y > 0:
+                    self.rect.y -= 1
+            elif pygame.key.get_pressed()[pygame.K_s]:
                 self.cur_frame = 1
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                self.rect.y += 1
-            elif pygame.key.get_pressed()[pygame.K_d] and self.rect.x < 550:
+                if self.rect.y < 500:
+                    self.rect.y += 1
+            elif pygame.key.get_pressed()[pygame.K_d]:
                 self.cur_frame = 2
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                self.rect.x += 1
-            elif pygame.key.get_pressed()[pygame.K_a] and self.rect.x > 0:
+                if self.rect.x < 550:
+                    self.rect.x += 1
+            elif pygame.key.get_pressed()[pygame.K_a]:
                 self.cur_frame = 3
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                self.rect.x -= 1
+                if self.rect.x > 0:
+                    self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_SPACE]:
                 if clock - self.bullet_delay >= 500:
                     self.bullet_delay = clock
