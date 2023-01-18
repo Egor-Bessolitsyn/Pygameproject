@@ -15,12 +15,13 @@ pygame.mixer.music.load("data/Music_of_game.mp3")
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(0.2)
 button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
+Map_name = ''
 
 
 def start_game():
     global player1, player2
     pygame.display.set_caption("Tanks")
-    player1, player2, level_x, level_y = generate_level(load_level('Card1.txt'))
+    player1, player2, level_x, level_y = generate_level(load_level(f'{Map_name}.txt'))
     size = (level_x + 1) * tile_width, (level_y + 1) * tile_height
     screen = pygame.display.set_mode(size)
     move = False
@@ -147,6 +148,8 @@ class Button:
         self.active_color = active_color
 
     def draw(self, x, y, massage, action=None):
+        global Map_name
+        Map_name = massage
         mouse_clicked = pygame.mouse.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
         if x < mouse_pos[0] < (x + self.width) and y < mouse_pos[1] < (y + self.height):
