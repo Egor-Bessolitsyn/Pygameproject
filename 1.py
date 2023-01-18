@@ -173,8 +173,8 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         self.create_mask()
         self.rect = self.rect.move(x, y)
         self.rect = self.image.get_rect()
-        self.rect.x = 200
-        self.rect.y = 200
+        self.rect.x = 300
+        self.rect.y = 300
         self.tick_time = 0
         self.bullet_delay = 0
         self.count_shot = 0
@@ -211,26 +211,34 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                 self.cur_frame = 0
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.y > 0:
+                if self.rect.y > 0 and not pygame.sprite.spritecollideany(player2, wall_group):
                     self.rect.y -= 1
+                    if pygame.sprite.spritecollideany(player2, wall_group):
+                        self.rect.y += 1
             elif pygame.key.get_pressed()[pygame.K_DOWN]:
                 self.cur_frame = 1
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.y < 500:
+                if self.rect.y < 500 and not pygame.sprite.spritecollideany(player2, wall_group):
                     self.rect.y += 1
+                    if pygame.sprite.spritecollideany(player2, wall_group):
+                        self.rect.y -= 1
             elif pygame.key.get_pressed()[pygame.K_RIGHT]:
                 self.cur_frame = 2
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.x < 550:
+                if self.rect.x < 550 and not pygame.sprite.spritecollideany(player2, wall_group):
                     self.rect.x += 1
+                    if pygame.sprite.spritecollideany(player2, wall_group):
+                        self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_LEFT]:
                 self.cur_frame = 3
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.x > 0:
+                if self.rect.x > 0 and not pygame.sprite.spritecollideany(player2, wall_group):
                     self.rect.x -= 1
+                    if pygame.sprite.spritecollideany(player2, wall_group):
+                        self.rect.x += 1
             elif pygame.key.get_pressed()[pygame.K_KP0]:
                 if clock - self.bullet_delay >= 500:
                     self.bullet_delay = clock
@@ -262,7 +270,7 @@ class Tank_WASD(pygame.sprite.Sprite):
         self.create_mask()
         self.rect = self.rect.move(x, y)
         self.rect = self.image.get_rect()
-        self.rect.x = 100
+        self.rect.x = 150
         self.rect.y = 150
         self.tick_time = 0
         self.bullet_delay = 0
@@ -300,26 +308,36 @@ class Tank_WASD(pygame.sprite.Sprite):
                 self.cur_frame = 0
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.y > 0:
+                if self.rect.y > 0 and not pygame.sprite.spritecollideany(player1, wall_group):
                     self.rect.y -= 1
+                    if pygame.sprite.spritecollideany(player1, wall_group):
+                        self.rect.y += 1
             elif pygame.key.get_pressed()[pygame.K_s]:
                 self.cur_frame = 1
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.y < 500:
+                if self.rect.y < 500 and not pygame.sprite.spritecollideany(player1, wall_group):
                     self.rect.y += 1
+                    if pygame.sprite.spritecollideany(player1, wall_group):
+                        self.rect.y -= 1
             elif pygame.key.get_pressed()[pygame.K_d]:
                 self.cur_frame = 2
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.x < 550:
+                if self.rect.x < 550 and not pygame.sprite.spritecollideany(player1, wall_group):
                     self.rect.x += 1
+                    if pygame.sprite.spritecollideany(player1, wall_group):
+                        self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_a]:
                 self.cur_frame = 3
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.x > 0:
+                if self.rect.x > 0 and not pygame.sprite.spritecollideany(player1, wall_group):
                     self.rect.x -= 1
+                    if pygame.sprite.spritecollideany(player1, wall_group):
+                        self.rect.x += 1
+
+
             elif pygame.key.get_pressed()[pygame.K_SPACE]:
                 if clock - self.bullet_delay >= 500:
                     self.bullet_delay = clock
@@ -407,7 +425,9 @@ class Bullet(pygame.sprite.Sprite):
         elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
             self.kill()
             player2.count_live()
-
+        for i in wall_group.sprites():
+            if pygame.sprite.collide_mask(self, i):
+                self.kill()
         else:
             if self.cur_frame == 0:
                 self.rect.y -= 2
