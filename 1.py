@@ -163,7 +163,7 @@ class Button:
 
 
 class Tank_2_pdrl(pygame.sprite.Sprite):
-    def __init__(self, sheet, columns, rows, x, y):
+    def __init__(self, sheet, columns, rows, x, y, x_pos, y_pos):
         super().__init__(tanks_sprites)
         self.frames = []
         self.cut_sheet(sheet, columns, rows)
@@ -172,8 +172,8 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         self.create_mask()
         self.rect = self.rect.move(x, y)
         self.rect = self.image.get_rect()
-        self.rect.x = 300
-        self.rect.y = 300
+        self.rect.x = x_pos
+        self.rect.y = y_pos
         self.tick_time = 0
         self.bullet_delay = 0
         self.count_shot = 0
@@ -260,7 +260,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
 
 class Tank_WASD(pygame.sprite.Sprite):
-    def __init__(self, sheet, columns, rows, x, y):
+    def __init__(self, sheet, columns, rows, x, y, x_pos, y_pos):
         super().__init__(tanks_sprites)
         self.frames = []
         self.cut_sheet(sheet, columns, rows)
@@ -269,8 +269,8 @@ class Tank_WASD(pygame.sprite.Sprite):
         self.create_mask()
         self.rect = self.rect.move(x, y)
         self.rect = self.image.get_rect()
-        self.rect.x = 150
-        self.rect.y = 150
+        self.rect.x = x_pos
+        self.rect.y = y_pos
         self.tick_time = 0
         self.bullet_delay = 0
         self.count_shot = 0
@@ -487,10 +487,10 @@ def generate_level(level):
                 Tile('wall', x, y)
             elif level[y][x] == 'T':
                 Tile('empty', x, y)
-                tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50)
+                tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50, x * 50, y * 50)
             elif level[y][x] == 't':
                 Tile('empty', x, y)
-                tank_2 = Tank_2_pdrl(load_image("green_tanks.png"), 4, 1, 50, 50)
+                tank_2 = Tank_2_pdrl(load_image("green_tanks.png"), 4, 1, 50, 50, x * 50, y * 50)
             elif level[y][x] == '2':
                 Tile('indestructible_wall', x, y)
     return tank_1, tank_2, x, y
