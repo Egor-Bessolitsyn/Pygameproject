@@ -2,7 +2,6 @@ import pygame
 import os
 import sys
 
-# №фывыфв
 # or (300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)
 # (300 < pygame.mouse.get_pos()[0] < 500 and 390 < pygame.mouse.get_pos()[1] < 450)
 FPS = 100
@@ -28,6 +27,8 @@ def start_game():
     last_event = None
     running = True
     while running:
+        all_sprites.update()
+        all_sprites.draw(screen)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -37,10 +38,9 @@ def start_game():
                 move = True
                 last_event = event
             if event.type == pygame.KEYUP:
-                move = False
+                move = True
+                last_event = event
             tanks_sprites.update(event)
-        all_sprites.update()
-        all_sprites.draw(screen)
         if move:
             tanks_sprites.update(last_event)
         tanks_sprites.draw(screen)
@@ -96,7 +96,6 @@ def maps_menu():
         map3.draw(500, 100, 'Map3', start_game)
         map4.draw(100, 300, 'Map4', start_game)
         map5.draw(300, 300, 'Map5', start_game)
-        # print(card_sprites.sprites())
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -203,7 +202,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def update(self, *args):
         clock = pygame.time.get_ticks()
-        if args and args[0].type == pygame.KEYDOWN:
+        if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP]:
             self.tick_time += 1
             if self.tick_time % 10 == 1:
                 self.tick_time %= 10
@@ -239,8 +238,8 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                     self.rect.x -= 1
                     if pygame.sprite.spritecollideany(player2, wall_group):
                         self.rect.x += 1
-            elif pygame.key.get_pressed()[pygame.K_KP0]:
-                if clock - self.bullet_delay >= 500:
+            if pygame.key.get_pressed()[pygame.K_KP0]:
+                if clock - self.bullet_delay >= 750:
                     self.bullet_delay = clock
                     if self.cur_frame == 0:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y - 28, self.cur_frame)
@@ -300,7 +299,7 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def update(self, *args):
         clock = pygame.time.get_ticks()
-        if args and args[0].type == pygame.KEYDOWN:
+        if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP]:
             self.tick_time += 1
             if self.tick_time % 10 == 1:
                 self.tick_time %= 10
@@ -336,10 +335,8 @@ class Tank_WASD(pygame.sprite.Sprite):
                     self.rect.x -= 1
                     if pygame.sprite.spritecollideany(player1, wall_group):
                         self.rect.x += 1
-
-
-            elif pygame.key.get_pressed()[pygame.K_SPACE]:
-                if clock - self.bullet_delay >= 500:
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
+                if clock - self.bullet_delay >= 750:
                     self.bullet_delay = clock
                     if self.cur_frame == 0:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y - 28, self.cur_frame)
@@ -493,7 +490,7 @@ def generate_level(level):
                 tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50)
             elif level[y][x] == 't':
                 Tile('empty', x, y)
-                tank_2 = Tank_2_pdrl(load_image("yellow_tanks.png"), 4, 1, 50, 50)
+                tank_2 = Tank_2_pdrl(load_image("green_tanks.png"), 4, 1, 50, 50)
             elif level[y][x] == '2':
                 Tile('indestructible_wall', x, y)
     return tank_1, tank_2, x, y
