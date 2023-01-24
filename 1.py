@@ -126,15 +126,17 @@ tile_images = {
     'indestructible_wall': load_image('iron_cell.png')
 }
 
-tile_width = tile_height = 50
+tile_width = tile_height = 25
 
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(tiles_group, all_sprites)
         self.image = tile_images[tile_type]
-        if tile_type == 'wall' or tile_type == 'indestructible_wall':
+        if tile_type == 'wall':
             self.add(wall_group)
+        if tile_type == 'indestructible_wall':
+            self.add(indestructible_wall_group)
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
@@ -201,62 +203,67 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         end_screen()
 
     def update(self, *args):
-        clock = pygame.time.get_ticks()
+        get_tick = pygame.time.get_ticks()
         if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP]:
-            self.tick_time += 1
-            if self.tick_time % 10 == 1:
-                self.tick_time %= 10
             if pygame.key.get_pressed()[pygame.K_UP]:
                 self.cur_frame = 0
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.y > 0 and not pygame.sprite.spritecollideany(player2, wall_group):
+                if self.rect.y > 0 and not pygame.sprite.spritecollideany(player2, wall_group) \
+                        and not pygame.sprite.spritecollideany(player2, indestructible_wall_group):
                     self.rect.y -= 1
-                    if pygame.sprite.spritecollideany(player2, wall_group):
+                    if pygame.sprite.spritecollideany(player2, wall_group) \
+                            or pygame.sprite.spritecollideany(player2, indestructible_wall_group):
                         self.rect.y += 1
             elif pygame.key.get_pressed()[pygame.K_DOWN]:
                 self.cur_frame = 1
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.y < 500 and not pygame.sprite.spritecollideany(player2, wall_group):
+                if self.rect.y < 500 and not pygame.sprite.spritecollideany(player2, wall_group) \
+                        and not pygame.sprite.spritecollideany(player2, indestructible_wall_group):
                     self.rect.y += 1
-                    if pygame.sprite.spritecollideany(player2, wall_group):
+                    if pygame.sprite.spritecollideany(player2, wall_group) \
+                            or pygame.sprite.spritecollideany(player2, indestructible_wall_group):
                         self.rect.y -= 1
             elif pygame.key.get_pressed()[pygame.K_RIGHT]:
                 self.cur_frame = 2
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.x < 550 and not pygame.sprite.spritecollideany(player2, wall_group):
+                if self.rect.x < 550 and not pygame.sprite.spritecollideany(player2, wall_group) \
+                        and not pygame.sprite.spritecollideany(player2, indestructible_wall_group):
                     self.rect.x += 1
-                    if pygame.sprite.spritecollideany(player2, wall_group):
+                    if pygame.sprite.spritecollideany(player2, wall_group) \
+                            or pygame.sprite.spritecollideany(player2, indestructible_wall_group):
                         self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_LEFT]:
                 self.cur_frame = 3
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.x > 0 and not pygame.sprite.spritecollideany(player2, wall_group):
+                if self.rect.x > 0 and not pygame.sprite.spritecollideany(player2, wall_group) \
+                        and not pygame.sprite.spritecollideany(player2, indestructible_wall_group):
                     self.rect.x -= 1
-                    if pygame.sprite.spritecollideany(player2, wall_group):
+                    if pygame.sprite.spritecollideany(player2, wall_group) \
+                            or pygame.sprite.spritecollideany(player2, indestructible_wall_group):
                         self.rect.x += 1
             if pygame.key.get_pressed()[pygame.K_KP0]:
-                if clock - self.bullet_delay >= 750:
-                    self.bullet_delay = clock
+                if get_tick - self.bullet_delay >= 750:
+                    self.bullet_delay = get_tick
                     if self.cur_frame == 0:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y - 28, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
-                               self.rect.x + 18, self.rect.y - 14, self.cur_frame)
+                               self.rect.x + 18, self.rect.y - 14 - 5, self.cur_frame)
                     elif self.cur_frame == 1:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y + 50, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
-                               self.rect.x + 18, self.rect.y + 50, self.cur_frame)
+                               self.rect.x + 18, self.rect.y + 50 + 5, self.cur_frame)
                     elif self.cur_frame == 2:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 50, self.rect.y + 11, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
-                               self.rect.x + 50, self.rect.y + 18, self.cur_frame)
+                               self.rect.x + 50 + 5, self.rect.y + 18, self.cur_frame)
                     elif self.cur_frame == 3:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x - 28, self.rect.y + 11, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
-                               self.rect.x - 14, self.rect.y + 18, self.cur_frame)
+                               self.rect.x - 14 - 5, self.rect.y + 18, self.cur_frame)
 
 
 class Tank_WASD(pygame.sprite.Sprite):
@@ -298,7 +305,7 @@ class Tank_WASD(pygame.sprite.Sprite):
         end_screen()
 
     def update(self, *args):
-        clock = pygame.time.get_ticks()
+        get_tick = pygame.time.get_ticks()
         if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP]:
             self.tick_time += 1
             if self.tick_time % 10 == 1:
@@ -307,53 +314,61 @@ class Tank_WASD(pygame.sprite.Sprite):
                 self.cur_frame = 0
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.y > 0 and not pygame.sprite.spritecollideany(player1, wall_group):
+                if self.rect.y > 0 and not pygame.sprite.spritecollideany(player1, wall_group) \
+                        and not pygame.sprite.spritecollideany(player1, indestructible_wall_group):
                     self.rect.y -= 1
-                    if pygame.sprite.spritecollideany(player1, wall_group):
+                    if pygame.sprite.spritecollideany(player1, wall_group) \
+                            or pygame.sprite.spritecollideany(player1, indestructible_wall_group):
                         self.rect.y += 1
             elif pygame.key.get_pressed()[pygame.K_s]:
                 self.cur_frame = 1
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.y < 500 and not pygame.sprite.spritecollideany(player1, wall_group):
+                if self.rect.y < 500 and not pygame.sprite.spritecollideany(player1, wall_group) \
+                        and not pygame.sprite.spritecollideany(player1, indestructible_wall_group):
                     self.rect.y += 1
-                    if pygame.sprite.spritecollideany(player1, wall_group):
+                    if pygame.sprite.spritecollideany(player1, wall_group) \
+                            or pygame.sprite.spritecollideany(player1, indestructible_wall_group):
                         self.rect.y -= 1
             elif pygame.key.get_pressed()[pygame.K_d]:
                 self.cur_frame = 2
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.x < 550 and not pygame.sprite.spritecollideany(player1, wall_group):
+                if self.rect.x < 550 and not pygame.sprite.spritecollideany(player1, wall_group) \
+                        and not pygame.sprite.spritecollideany(player1, indestructible_wall_group):
                     self.rect.x += 1
-                    if pygame.sprite.spritecollideany(player1, wall_group):
+                    if pygame.sprite.spritecollideany(player1, wall_group) \
+                            or pygame.sprite.spritecollideany(player1, indestructible_wall_group):
                         self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_a]:
                 self.cur_frame = 3
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
-                if self.rect.x > 0 and not pygame.sprite.spritecollideany(player1, wall_group):
+                if self.rect.x > 0 and not pygame.sprite.spritecollideany(player1, wall_group) \
+                        and not pygame.sprite.spritecollideany(player1, indestructible_wall_group):
                     self.rect.x -= 1
-                    if pygame.sprite.spritecollideany(player1, wall_group):
+                    if pygame.sprite.spritecollideany(player1, wall_group) \
+                            or pygame.sprite.spritecollideany(player1, indestructible_wall_group):
                         self.rect.x += 1
             if pygame.key.get_pressed()[pygame.K_SPACE]:
-                if clock - self.bullet_delay >= 750:
-                    self.bullet_delay = clock
+                if get_tick - self.bullet_delay >= 750:
+                    self.bullet_delay = get_tick
                     if self.cur_frame == 0:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y - 28, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
-                               self.rect.x + 18, self.rect.y - 14, self.cur_frame)
+                               self.rect.x + 18, self.rect.y - 14 - 5, self.cur_frame)
                     elif self.cur_frame == 1:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y + 50, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
-                               self.rect.x + 18, self.rect.y + 50, self.cur_frame)
+                               self.rect.x + 18, self.rect.y + 50 + 5, self.cur_frame)
                     elif self.cur_frame == 2:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 50, self.rect.y + 11, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
-                               self.rect.x + 50, self.rect.y + 18, self.cur_frame)
+                               self.rect.x + 50 + 5, self.rect.y + 18, self.cur_frame)
                     elif self.cur_frame == 3:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x - 28, self.rect.y + 11, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
-                               self.rect.x - 14, self.rect.y + 18, self.cur_frame)
+                               self.rect.x - 14 - 5, self.rect.y + 18, self.cur_frame)
 
 
 class Shot(pygame.sprite.Sprite):
@@ -414,6 +429,18 @@ class Bullet(pygame.sprite.Sprite):
                     frame_location, self.rect.size)))
 
     def update(self, *args):
+        gets_git_ind_wall = pygame.sprite.spritecollide(self, indestructible_wall_group, False)
+        if gets_git_ind_wall:
+            for i in gets_git_ind_wall:
+                if pygame.sprite.collide_mask(self, i):
+                    self.kill()
+        gets_git_wall_gr = pygame.sprite.spritecollide(self, wall_group, False)
+        if gets_git_wall_gr:
+            for i in gets_git_wall_gr:
+                if pygame.sprite.collide_mask(self, i):
+                    self.kill()
+                    Tile('empty', i.rect.x // 25, i.rect.y // 25)
+                    i.kill()
         if not self.rect.colliderect(screen_rect):
             self.kill()
         elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[0]):
@@ -422,9 +449,11 @@ class Bullet(pygame.sprite.Sprite):
         elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
             self.kill()
             player2.count_live()
-        for i in wall_group.sprites():
-            if pygame.sprite.collide_mask(self, i):
-                self.kill()
+        # for i in wall_group.sprites():
+        #     if pygame.sprite.collide_mask(self, i):
+        #         self.kill()
+        #         Tile('empty', i.rect.x // 25, i.rect.y // 25)
+        #         i.kill()
         else:
             if self.cur_frame == 0:
                 self.rect.y -= 2
@@ -487,10 +516,10 @@ def generate_level(level):
                 Tile('wall', x, y)
             elif level[y][x] == 'T':
                 Tile('empty', x, y)
-                tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50, x * 50, y * 50)
+                tank_1 = Tank_WASD(load_image("yellow_tanks.png"), 4, 1, 50, 50, x * 25, y * 25)
             elif level[y][x] == 't':
                 Tile('empty', x, y)
-                tank_2 = Tank_2_pdrl(load_image("green_tanks.png"), 4, 1, 50, 50, x * 50, y * 50)
+                tank_2 = Tank_2_pdrl(load_image("green_tanks.png"), 4, 1, 50, 50, x * 25, y * 25)
             elif level[y][x] == '2':
                 Tile('indestructible_wall', x, y)
     return tank_1, tank_2, x, y
@@ -500,6 +529,7 @@ if __name__ == '__main__':
     tiles_group = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     wall_group = pygame.sprite.Group()
+    indestructible_wall_group = pygame.sprite.Group()
     bullet_sprites = pygame.sprite.Group()
     tanks_sprites = pygame.sprite.Group()
 
