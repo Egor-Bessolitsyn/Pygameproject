@@ -79,6 +79,16 @@ with open('data/Map5.txt') as file:
                 B[row * 2 + 1][col * 2] = '0'
                 B[row * 2][col * 2 + 1] = '0'
                 B[row * 2 + 1][col * 2 + 1] = '0'
+            elif L[row][col] == '3':
+                B[row * 2][col * 2] = '3'
+                B[row * 2 + 1][col * 2] = '3'
+                B[row * 2][col * 2 + 1] = '3'
+                B[row * 2 + 1][col * 2 + 1] = '3'
+            elif L[row][col] == '4':
+                B[row * 2][col * 2] = '4'
+                B[row * 2 + 1][col * 2] = '4'
+                B[row * 2][col * 2 + 1] = '4'
+                B[row * 2 + 1][col * 2 + 1] = '4'
     file1 = open("data/Map5.txt", 'w')
     for i in B:
         i = ''.join(i)
