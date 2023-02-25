@@ -13,9 +13,6 @@ monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h
 screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 icon = pygame.image.load("data/icon.png")
 pygame.display.set_icon(icon)
-pygame.mixer.music.load("data/Fon_music.mp3")
-pygame.mixer.music.play(-1)
-pygame.mixer.music.set_volume(0.5)
 button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
 Map_name = ''
 fullscreen = False
@@ -86,6 +83,9 @@ def print_text(massage, x, y, font_color=(255, 255, 255), font_type='data/PINGPO
 
 
 def maps_menu():
+    pygame.mixer.music.load("data/Fon_music.mp3")
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.5)
     fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     show = True
@@ -512,6 +512,10 @@ def terminate():
 
 
 def start_screen():
+    pygame.mixer.music.load("data/Fon_music.mp3")
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.5)
+
     fon = pygame.transform.scale(load_image('new.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
 
@@ -562,9 +566,9 @@ def end_screen(Tank_win):
 
     while True:
         button_return_menu = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_return_menu.draw(50, 500, 'Main menu', maps_menu)
+        button_return_menu.draw(50, 500, 'Restart', maps_menu)
         button_return_mainmenu = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_return_mainmenu.draw(290, 500, 'Start', start_screen)
+        button_return_mainmenu.draw(290, 500, 'Main menu', start_screen)
         button_exit = Button(200, 40, (130, 130, 130), (100, 0, 0))
         button_exit.draw(540, 500, 'Exit', end_game)
         for event in pygame.event.get():
