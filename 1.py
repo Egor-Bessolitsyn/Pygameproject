@@ -2,8 +2,6 @@ import pygame
 import os
 import sys
 
-# or (300 < pygame.mouse.get_pos()[0] < 500 and 460 < pygame.mouse.get_pos()[1] < 500)
-# (300 < pygame.mouse.get_pos()[0] < 500 and 390 < pygame.mouse.get_pos()[1] < 450)
 FPS = 100
 size = WIDTH, HEIGHT = 800, 600
 screen_rect = (0, 0, WIDTH, HEIGHT)
@@ -29,6 +27,7 @@ def start_game():
     last_event = None
     last_shot = None
     running = True
+    pygame.event.clear()
     while running:
         for i in leaf_wall_group.sprites():
             screen.fill((50, 50, 50), i.rect)
@@ -497,11 +496,6 @@ class Bullet(pygame.sprite.Sprite):
         elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
             self.kill()
             player2.count_live()
-        # for i in wall_group.sprites():
-        #     if pygame.sprite.collide_mask(self, i):
-        #         self.kill()
-        #         Tile('empty', i.rect.x // 25, i.rect.y // 25)
-        #         i.kill()
         else:
             if self.cur_frame == 0:
                 self.rect.y -= 2
@@ -527,15 +521,12 @@ def start_screen():
     screen.blit(fon, (0, 0))
 
     while True:
-        #button_sologame = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        #button_sologame.draw(300, 390, '1 Player')
-
-
+        # button_sologame = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        # button_sologame.draw(300, 390, '1 Player')
         button_pvpgame = Button(200, 40, (255, 0, 0), (100, 0, 0))
         button_pvpgame.draw(300, 470, '2 Players', maps_menu)
-
-        #button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        #button_build.draw(300, 510, 'Building')
+        # button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        # button_build.draw(300, 510, 'Building')
 
         button_exit = Button(100, 40, (0, 0, 0), (50, 50, 50))
         button_exit.draw(699, 559, 'Exit', end_game)
