@@ -99,10 +99,25 @@ def maps_menu():
         menu = pygame.Surface(size)
         screen.blit(menu, (0, 0))
         map1.draw(100, 100, 'Map1', start_game)
-        map2.draw(300, 100, 'Map2', start_game)
-        map3.draw(500, 100, 'Map3', start_game)
-        map4.draw(100, 300, 'Map4', start_game)
-        map5.draw(300, 300, 'Map5', start_game)
+        Map1 = pygame.transform.scale(load_image('Map1.png'), (150, 150))
+        screen.blit(Map1, (100, 100))
+        print_text("Map1", 140, 60, font_color=(255, 255, 100), font_size=35)
+        map2.draw(300, 100, 'Map6', start_game)
+        Map2 = pygame.transform.scale(load_image('Map6.png'), (150, 150))
+        screen.blit(Map2, (300, 100))
+        print_text("Map2", 340, 60, font_color=(255, 255, 100), font_size=35)
+        map3.draw(500, 100, 'Map7', start_game)
+        Map3 = pygame.transform.scale(load_image('Map7.png'), (150, 150))
+        screen.blit(Map3, (500, 100))
+        print_text("Map3", 540, 60, font_color=(255, 255, 100), font_size=35)
+        map4.draw(100, 320, 'Map8', start_game)
+        Map4 = pygame.transform.scale(load_image('Map8.png'), (150, 150))
+        screen.blit(Map4, (100, 320))
+        print_text("Map4", 140, 280, font_color=(255, 255, 100), font_size=35)
+        map5.draw(300, 320, 'Map9', start_game)
+        Map5 = pygame.transform.scale(load_image('Map9.png'), (150, 150))
+        screen.blit(Map5, (300, 320))
+        print_text("Map5", 340, 280, font_color=(255, 255, 100), font_size=35)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -504,8 +519,9 @@ def start_screen():
         #button_sologame = Button(200, 40, (255, 0, 0), (100, 0, 0))
         #button_sologame.draw(300, 390, '1 Player')
 
+
         button_pvpgame = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        button_pvpgame.draw(300, 450, '2 Players', maps_menu)
+        button_pvpgame.draw(300, 470, '2 Players', maps_menu)
 
         #button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
         #button_build.draw(300, 510, 'Building')
@@ -518,6 +534,7 @@ def start_screen():
             if event.type == pygame.QUIT:
                 terminate()
         pygame.display.flip()
+
 
 
 def end_screen(Tank_win):
