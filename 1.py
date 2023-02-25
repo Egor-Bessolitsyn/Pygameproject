@@ -9,14 +9,16 @@ size = WIDTH, HEIGHT = 800, 600
 screen_rect = (0, 0, WIDTH, HEIGHT)
 clock = pygame.time.Clock()
 pygame.init()
-screen = pygame.display.set_mode(size)
+monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
+screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 icon = pygame.image.load("data/icon.png")
 pygame.display.set_icon(icon)
-pygame.mixer.music.load("data/Music_of_game.mp3")
+pygame.mixer.music.load("data/Fon_music.mp3")
 pygame.mixer.music.play(-1)
-pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.set_volume(0.5)
 button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
 Map_name = ''
+fullscreen = False
 
 
 def start_game():
@@ -208,7 +210,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
-        end_screen()
+        end_screen("Yellow_win")
 
     def update(self, *args):
         get_tick = pygame.time.get_ticks()
@@ -318,7 +320,7 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
-        end_screen()
+        end_screen("Green_win")
 
     def update(self, *args):
         get_tick = pygame.time.get_ticks()
@@ -518,19 +520,36 @@ def start_screen():
         pygame.display.flip()
 
 
-def end_screen():
+def end_screen(Tank_win):
+    pygame.mixer.music.load("data/Win_music.mp3")
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.5)
     f()
     screen = pygame.display.set_mode(size)
-    fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
+    fon = pygame.transform.scale(load_image('End.gif'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
+    if Tank_win == "Yellow_win":
+        WINNER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
+        screen.blit(WINNER, (130, 100))
+        LOSER = pygame.transform.scale(load_image('Green_Win.png'), (200, 200))
+        screen.blit(LOSER, (470, 100))
+        print_text("Yellow - WIN", 100, 350, font_size=40, font_color=(255, 255, 0))
+        print_text("Green - LOSE", 450, 350, font_size=40, font_color=(0, 255, 0))
+    if Tank_win == "Green_win":
+        WINNER = pygame.transform.scale(load_image('Green_Win.png'), (200, 200))
+        screen.blit(WINNER, (470, 100))
+        LOSER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
+        screen.blit(LOSER, (130, 100))
+        print_text("Yellow - LOSE", 100, 350, font_size=40, font_color=(255, 255, 0))
+        print_text("Green - WIN", 450, 350, font_size=40, font_color=(0, 255, 0))
 
     while True:
         button_return_menu = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_return_menu.draw(10, 500, 'Main menu', maps_menu)
+        button_return_menu.draw(50, 500, 'Main menu', maps_menu)
         button_return_mainmenu = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_return_mainmenu.draw(250, 500, 'Start', start_screen)
+        button_return_mainmenu.draw(290, 500, 'Start', start_screen)
         button_exit = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_exit.draw(500, 500, 'Exit', end_game)
+        button_exit.draw(540, 500, 'Exit', end_game)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
@@ -576,5 +595,11 @@ def f():
 if __name__ == '__main__':
     f()
     start_screen()
-
+    for event in pygame.event.get():
+        if event.type == pygame.VIDEORESIZE:
+            fullscreen = not fullscreen
+            if fullscreen:
+                screen = pygame.display.set_mode(monitor_size, pygame.FULLSCREEN)
+            else:
+                screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 pygame.quit()
