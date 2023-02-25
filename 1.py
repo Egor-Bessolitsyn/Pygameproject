@@ -26,7 +26,9 @@ def start_game():
     size = (level_x + 1) * tile_width, (level_y + 1) * tile_height
     screen = pygame.display.set_mode(size)
     move = False
+    move_shot = False
     last_event = None
+    last_shot = None
     running = True
     while running:
         for i in leaf_wall_group.sprites():
@@ -38,13 +40,15 @@ def start_game():
                 running = False
                 pygame.quit()
                 quit()
-            if event.type == pygame.KEYDOWN:
+            if event.type in [pygame.MOUSEBUTTONUP]:
+                move_shot = True
+                last_shot = event
+            if event.type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION]:
                 move = True
                 last_event = event
-            if event.type == pygame.KEYUP:
-                move = True
-                last_event = event
-            tanks_sprites.update(event)
+        if move_shot:
+            tanks_sprites.update(last_shot)
+            move_shot = False
         if move:
             tanks_sprites.update(last_event)
         tanks_sprites.draw(screen)
@@ -212,7 +216,8 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def update(self, *args):
         get_tick = pygame.time.get_ticks()
-        if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP]:
+        if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP,
+                                     pygame.MOUSEMOTION]:
             if pygame.key.get_pressed()[pygame.K_UP]:
                 self.cur_frame = 0
                 self.create_mask()
@@ -261,7 +266,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player2, indestructible_wall_group) \
                             or pygame.sprite.spritecollideany(player2, water_wall_group):
                         self.rect.x += 1
-            if pygame.key.get_pressed()[pygame.K_KP0]:
+            if pygame.key.get_pressed()[pygame.K_KP0] or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3):
                 if get_tick - self.bullet_delay >= 750:
                     self.bullet_delay = get_tick
                     if self.cur_frame == 0:
@@ -322,7 +327,8 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def update(self, *args):
         get_tick = pygame.time.get_ticks()
-        if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP]:
+        if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP,
+                                     pygame.MOUSEMOTION]:
             self.tick_time += 1
             if self.tick_time % 10 == 1:
                 self.tick_time %= 10
@@ -374,7 +380,8 @@ class Tank_WASD(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player1, indestructible_wall_group) \
                             or pygame.sprite.spritecollideany(player1, water_wall_group):
                         self.rect.x += 1
-            if pygame.key.get_pressed()[pygame.K_SPACE]:
+            if pygame.key.get_pressed()[pygame.K_SPACE] or (
+                    args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1):
                 if get_tick - self.bullet_delay >= 750:
                     self.bullet_delay = get_tick
                     if self.cur_frame == 0:
@@ -519,7 +526,7 @@ def start_screen():
 
 
 def end_screen():
-    f()
+    update_sprite()
     screen = pygame.display.set_mode(size)
     fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
@@ -561,8 +568,9 @@ def generate_level(level):
     return tank_1, tank_2, x, y
 
 
-def f():
-    global all_sprites, tiles_group, wall_group, indestructible_wall_group, water_wall_group, leaf_wall_group, bullet_sprites, tanks_sprites
+def update_sprite():
+    global all_sprites, tiles_group, wall_group, indestructible_wall_group
+    global water_wall_group, leaf_wall_group, bullet_sprites, tanks_sprites
     tiles_group = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     wall_group = pygame.sprite.Group()
@@ -574,7 +582,7 @@ def f():
 
 
 if __name__ == '__main__':
-    f()
+    update_sprite()
     start_screen()
 
 pygame.quit()
