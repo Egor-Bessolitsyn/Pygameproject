@@ -9,14 +9,13 @@ size = WIDTH, HEIGHT = 800, 600
 screen_rect = (0, 0, WIDTH, HEIGHT)
 clock = pygame.time.Clock()
 pygame.init()
-screen = pygame.display.set_mode(size)
+monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
+screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 icon = pygame.image.load("data/icon.png")
 pygame.display.set_icon(icon)
-pygame.mixer.music.load("data/Music_of_game.mp3")
-pygame.mixer.music.play(-1)
-pygame.mixer.music.set_volume(0.2)
 button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
 Map_name = ''
+fullscreen = False
 
 
 def start_game():
@@ -88,6 +87,9 @@ def print_text(massage, x, y, font_color=(255, 255, 255), font_type='data/PINGPO
 
 
 def maps_menu():
+    pygame.mixer.music.load("data/Fon_music.mp3")
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.5)
     fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     show = True
@@ -101,10 +103,25 @@ def maps_menu():
         menu = pygame.Surface(size)
         screen.blit(menu, (0, 0))
         map1.draw(100, 100, 'Map1', start_game)
-        map2.draw(300, 100, 'Map2', start_game)
-        map3.draw(500, 100, 'Map3', start_game)
-        map4.draw(100, 300, 'Map4', start_game)
-        map5.draw(300, 300, 'Map5', start_game)
+        Map1 = pygame.transform.scale(load_image('Map1.png'), (150, 150))
+        screen.blit(Map1, (100, 100))
+        print_text("Map1", 140, 60, font_color=(255, 255, 100), font_size=35)
+        map2.draw(300, 100, 'Map6', start_game)
+        Map2 = pygame.transform.scale(load_image('Map6.png'), (150, 150))
+        screen.blit(Map2, (300, 100))
+        print_text("Map2", 340, 60, font_color=(255, 255, 100), font_size=35)
+        map3.draw(500, 100, 'Map7', start_game)
+        Map3 = pygame.transform.scale(load_image('Map7.png'), (150, 150))
+        screen.blit(Map3, (500, 100))
+        print_text("Map3", 540, 60, font_color=(255, 255, 100), font_size=35)
+        map4.draw(100, 320, 'Map8', start_game)
+        Map4 = pygame.transform.scale(load_image('Map8.png'), (150, 150))
+        screen.blit(Map4, (100, 320))
+        print_text("Map4", 140, 280, font_color=(255, 255, 100), font_size=35)
+        map5.draw(300, 320, 'Map9', start_game)
+        Map5 = pygame.transform.scale(load_image('Map9.png'), (150, 150))
+        screen.blit(Map5, (300, 320))
+        print_text("Map5", 340, 280, font_color=(255, 255, 100), font_size=35)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -212,7 +229,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
-        end_screen()
+        end_screen("Yellow_win")
 
     def update(self, *args):
         get_tick = pygame.time.get_ticks()
@@ -323,7 +340,7 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
-        end_screen()
+        end_screen("Green_win")
 
     def update(self, *args):
         get_tick = pygame.time.get_ticks()
@@ -502,18 +519,23 @@ def terminate():
 
 
 def start_screen():
-    fon = pygame.transform.scale(load_image('fon.png'), (WIDTH, HEIGHT))
+    pygame.mixer.music.load("data/Fon_music.mp3")
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.5)
+
+    fon = pygame.transform.scale(load_image('new.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
 
     while True:
-        button_sologame = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        button_sologame.draw(300, 390, '1 Player')
+        #button_sologame = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        #button_sologame.draw(300, 390, '1 Player')
+
 
         button_pvpgame = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        button_pvpgame.draw(300, 450, '2 Players', maps_menu)
+        button_pvpgame.draw(300, 470, '2 Players', maps_menu)
 
-        button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        button_build.draw(300, 510, 'Building')
+        #button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        #button_build.draw(300, 510, 'Building')
 
         button_exit = Button(100, 40, (0, 0, 0), (50, 50, 50))
         button_exit.draw(699, 559, 'Exit', end_game)
@@ -525,19 +547,36 @@ def start_screen():
         pygame.display.flip()
 
 
-def end_screen():
+def end_screen(Tank_win):
+    pygame.mixer.music.load("data/Win_music.mp3")
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.5)
     update_sprite()
     screen = pygame.display.set_mode(size)
-    fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
+    fon = pygame.transform.scale(load_image('End.gif'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
+    if Tank_win == "Yellow_win":
+        WINNER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
+        screen.blit(WINNER, (130, 100))
+        LOSER = pygame.transform.scale(load_image('Green_Win.png'), (200, 200))
+        screen.blit(LOSER, (470, 100))
+        print_text("Yellow - WIN", 100, 350, font_size=40, font_color=(255, 255, 0))
+        print_text("Green - LOSE", 450, 350, font_size=40, font_color=(0, 255, 0))
+    if Tank_win == "Green_win":
+        WINNER = pygame.transform.scale(load_image('Green_Win.png'), (200, 200))
+        screen.blit(WINNER, (470, 100))
+        LOSER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
+        screen.blit(LOSER, (130, 100))
+        print_text("Yellow - LOSE", 100, 350, font_size=40, font_color=(255, 255, 0))
+        print_text("Green - WIN", 450, 350, font_size=40, font_color=(0, 255, 0))
 
     while True:
         button_return_menu = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_return_menu.draw(10, 500, 'Main menu', maps_menu)
+        button_return_menu.draw(50, 500, 'Restart', maps_menu)
         button_return_mainmenu = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_return_mainmenu.draw(250, 500, 'Start', start_screen)
+        button_return_mainmenu.draw(290, 500, 'Main menu', start_screen)
         button_exit = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_exit.draw(500, 500, 'Exit', end_game)
+        button_exit.draw(540, 500, 'Exit', end_game)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
@@ -584,5 +623,11 @@ def update_sprite():
 if __name__ == '__main__':
     update_sprite()
     start_screen()
-
+    for event in pygame.event.get():
+        if event.type == pygame.VIDEORESIZE:
+            fullscreen = not fullscreen
+            if fullscreen:
+                screen = pygame.display.set_mode(monitor_size, pygame.FULLSCREEN)
+            else:
+                screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 pygame.quit()
