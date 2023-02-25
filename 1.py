@@ -207,7 +207,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
-        end_screen()
+        end_screen('Win_Yellow')
 
     def update(self, *args):
         get_tick = pygame.time.get_ticks()
@@ -317,7 +317,7 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def Tank_kill(self):
         self.kill()
-        end_screen()
+        end_screen('Win_Green')
 
     def update(self, *args):
         get_tick = pygame.time.get_ticks()
@@ -517,7 +517,7 @@ def start_screen():
         pygame.display.flip()
 
 
-def end_screen():
+def end_screen(tank):
     f()
     screen = pygame.display.set_mode(size)
     fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
