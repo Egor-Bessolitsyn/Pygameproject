@@ -10,6 +10,7 @@ screen_rect = (0, 0, WIDTH, HEIGHT)
 clock = pygame.time.Clock()
 pygame.init()
 screen = pygame.display.set_mode(size)
+#pygame.display.set_icon()
 pygame.mixer.music.load("data/Music_of_game.mp3")
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(0.2)
@@ -105,9 +106,6 @@ def maps_menu():
                 show = False
                 pygame.quit()
                 quit()
-            if event.type == pygame.MOUSEBUTTONDOWN and \
-                    (0 < pygame.mouse.get_pos()[0] < 800 and 460 < pygame.mouse.get_pos()[1] < 500):
-                return
 
 
 def load_level(filename):
@@ -520,10 +518,18 @@ def start_screen():
 
 
 def end_screen():
-    fon = pygame.transform.scale(load_image('victory.png'), (600, 600))
+    f()
+    screen = pygame.display.set_mode(size)
+    fon = pygame.transform.scale(load_image('menu_fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
 
     while True:
+        button_return_menu = Button(200, 40, (130, 130, 130), (100, 0, 0))
+        button_return_menu.draw(10, 500, 'Main menu', maps_menu)
+        button_return_mainmenu = Button(200, 40, (130, 130, 130), (100, 0, 0))
+        button_return_mainmenu.draw(250, 500, 'Start', start_screen)
+        button_exit = Button(200, 40, (130, 130, 130), (100, 0, 0))
+        button_exit.draw(500, 500, 'Exit', end_game)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
@@ -554,7 +560,8 @@ def generate_level(level):
     return tank_1, tank_2, x, y
 
 
-if __name__ == '__main__':
+def f():
+    global all_sprites, tiles_group, wall_group, indestructible_wall_group, water_wall_group, leaf_wall_group, bullet_sprites, tanks_sprites
     tiles_group = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     wall_group = pygame.sprite.Group()
@@ -564,5 +571,9 @@ if __name__ == '__main__':
     bullet_sprites = pygame.sprite.Group()
     tanks_sprites = pygame.sprite.Group()
 
+
+if __name__ == '__main__':
+    f()
     start_screen()
+
 pygame.quit()
