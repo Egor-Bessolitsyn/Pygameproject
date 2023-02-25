@@ -497,18 +497,18 @@ def terminate():
 
 
 def start_screen():
-    fon = pygame.transform.scale(load_image('fon.png'), (WIDTH, HEIGHT))
+    fon = pygame.transform.scale(load_image('new.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
 
     while True:
-        button_sologame = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        button_sologame.draw(300, 390, '1 Player')
+        #button_sologame = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        #button_sologame.draw(300, 390, '1 Player')
 
         button_pvpgame = Button(200, 40, (255, 0, 0), (100, 0, 0))
         button_pvpgame.draw(300, 450, '2 Players', maps_menu)
 
-        button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
-        button_build.draw(300, 510, 'Building')
+        #button_build = Button(200, 40, (255, 0, 0), (100, 0, 0))
+        #button_build.draw(300, 510, 'Building')
 
         button_exit = Button(100, 40, (0, 0, 0), (50, 50, 50))
         button_exit.draw(699, 559, 'Exit', end_game)
