@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+from the_path import The_Path
 
 FPS = 100
 size = WIDTH, HEIGHT = 800, 600
