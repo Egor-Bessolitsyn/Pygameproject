@@ -53,7 +53,6 @@ def start_game():
         bullet_sprites.update()
         bullet_sprites.draw(screen)
         leaf_wall_group.draw(screen)
-        pygame.display.flip()
         clock.tick(FPS)
         pygame.display.flip()
 
