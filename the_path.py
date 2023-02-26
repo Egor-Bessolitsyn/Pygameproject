@@ -1,3 +1,17 @@
+a = []
+with open('data/Map8.txt') as file:
+    for i in file.readlines():
+        b = []
+        for j in range(len(i.rstrip())):
+            if i[j] not in ['T', 't']:
+                if int(i[j]) == 0:
+                    b.append(0)
+                else:
+                    b.append(1)
+            else:
+                b.append(0)
+        a.append(b)
+
 a = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -52,7 +66,6 @@ m = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]
 
-
 start = 2, 2
 end = 7, 15
 m[start[0]][start[1]] = 1
@@ -90,22 +103,24 @@ for i in m:
 
 i, j = end
 k = m[i][j]
-the_path = [(i, j)]
+The_Path = [(i, j)]
 while k > 1:
     if i > 0 and j < 23 and m[i - 1][j] == k - 1:
         i, j = i - 1, j
-        the_path.append((i, j))
+        The_Path.append((i, j))
         k -= 1
     elif j > 0 and i < 23 and m[i][j - 1] == k - 1:
         i, j = i, j - 1
-        the_path.append((i, j))
+        The_Path.append((i, j))
         k -= 1
     elif i < len(m) - 1 and m[i + 1][j] == k - 1:
         i, j = i + 1, j
-        the_path.append((i, j))
+        The_Path.append((i, j))
         k -= 1
     elif j < len(m[i]) - 1 and m[i][j + 1] == k - 1:
         i, j = i, j + 1
-        the_path.append((i, j))
+        The_Path.append((i, j))
         k -= 1
-print(the_path)
+
+The_Path = The_Path[::-1]
+print(The_Path)
