@@ -317,11 +317,14 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def count_live(self):
         self.count_shot += 1
+        hit_sound = pygame.mixer.Sound("data/Есть пробитие.mp3")
+        pygame.mixer.Sound.play(hit_sound)
         if self.count_shot == 3:
             self.Tank_kill()
 
     def Tank_kill(self):
         self.kill()
+        pygame.time.delay(1000)
         end_screen("Yellow_win")
 
     def update(self, *args):
@@ -454,11 +457,14 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def count_live(self):
         self.count_shot += 1
+        hit_sound = pygame.mixer.Sound("data/Есть пробитие.mp3")
+        pygame.mixer.Sound.play(hit_sound)
         if self.count_shot == 3:
             self.Tank_kill()
 
     def Tank_kill(self):
         self.kill()
+        pygame.time.delay(1000)
         end_screen("Green_win")
 
     def update(self, *args):
