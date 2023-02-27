@@ -1,7 +1,9 @@
 import pygame
 import os
 import sys
+from sys import setrecursionlimit
 
+setrecursionlimit(5000)
 FPS = 100
 size = WIDTH, HEIGHT = 800, 600
 screen_rect = (0, 0, WIDTH, HEIGHT)
@@ -38,7 +40,7 @@ def start_game():
                 running = False
                 pygame.quit()
                 quit()
-            if event.type in [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN]:
+            if event.type in [pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP]:
                 move_shot = True
                 last_shot = event
             if event.type in [pygame.KEYDOWN, pygame.KEYUP]:
@@ -168,25 +170,6 @@ class Tile(pygame.sprite.Sprite):
             tile_width * pos_x, tile_height * pos_y)
 
 
-def The_Path(start, end):
-    a = [[0 for i in range(24)] for _ in range(24)]
-    for sprt in wall_group.sprites():
-        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
-    for sprt in indestructible_wall_group.sprites():
-        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
-    for sprt in water_wall_group.sprites():
-        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
-
-    m = [[0 for i in range(24)] for _ in range(24)]
-    start = start
-    m[start[0]][start[1]] = 1
-    end = end
-    # print(end)
-    #
-    # for i in a:
-    #     print(i)
-
-
 class Button:
     def __init__(self, width, height, color, active_color):
         self.width = width
@@ -210,6 +193,96 @@ class Button:
         print_text(massage, x - len(massage) * 7 + self.width // 2, y + self.height // 3)
 
 
+def Finding_Path(start, end):
+    a = [[0 for i in range(24)] for _ in range(24)]
+    for sprt in wall_group.sprites():
+        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
+    for sprt in indestructible_wall_group.sprites():
+        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
+    for sprt in water_wall_group.sprites():
+        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
+
+    m = [[0 for i in range(24)] for _ in range(24)]
+    start = start
+    m[start[0]][start[1]] = 1
+    end = end
+
+    def make_step(k):
+        for i in range(len(m)):
+            for j in range(len(m[i])):
+                if m[i][j] == k:
+                    if i > 0 and m[i - 1][j] == 0 and a[i - 1][j] == 0:
+                        if j < 23 and m[i - 1][j + 1] == 0 and a[i - 1][j + 1] == 0:
+                            m[i - 1][j] = k + 1
+                            # m[i - 1][j + 1] = k + 1
+                    if j > 0 and m[i][j - 1] == 0 and a[i][j - 1] == 0:
+                        if i < 23 and m[i + 1][j - 1] == 0 and a[i + 1][j - 1] == 0:
+                            m[i][j - 1] = k + 1
+                            # m[i + 1][j - 1] = k + 1
+                    if i < len(m) - 2 and m[i + 1][j] == 0 and a[i + 1][j] == 0 and not a[i + 2][j]:
+                        if j < 22 and m[i + 1][j + 1] == 0 and a[i + 1][j + 1] == 0 and not a[i + 2][j + 1]:
+                            m[i + 1][j] = k + 1
+                            # m[i + 1][j + 1] = k + 1
+                    if j < len(m[i]) - 2 and m[i][j + 1] == 0 and a[i][j + 1] == 0 and not a[i][j + 2]:
+                        if i < 22 and m[i + 1][j + 1] <= k + 1 and a[i + 1][j + 1] == 0 and not a[i + 1][j + 2]:
+                            m[i][j + 1] = k + 1
+                            # m[i + 1][j + 1] = k + 1
+
+    k = 0
+    while m[end[0]][end[1]] == 0:
+        k += 1
+        make_step(k)
+
+    i, j = end
+    k = m[i][j]
+    path = [(i, j)]
+    while k > 1:
+        if i > 0 and j < 23 and m[i - 1][j] == k - 1:
+            i, j = i - 1, j
+            path.append((i, j))
+            k -= 1
+        elif j > 0 and i < 23 and m[i][j - 1] == k - 1:
+            i, j = i, j - 1
+            path.append((i, j))
+            k -= 1
+        elif i < len(m) - 1 and m[i + 1][j] == k - 1:
+            i, j = i + 1, j
+            path.append((i, j))
+            k -= 1
+        elif j < len(m[i]) - 1 and m[i][j + 1] == k - 1:
+            i, j = i, j + 1
+            path.append((i, j))
+            k -= 1
+    return path[::-1]
+
+
+def prepare_start(pos_tank, end_pos, class_tank, last_event):
+    if pos_tank[0] < end_pos[0]:
+        class_tank.rect.x += 1
+        class_tank.cur_frame = 2
+        class_tank.image = class_tank.frames[class_tank.cur_frame]
+    elif pos_tank[0] > end_pos[0]:
+        class_tank.rect.x -= 1
+        class_tank.cur_frame = 3
+        class_tank.image = class_tank.frames[class_tank.cur_frame]
+    elif pos_tank[1] < end_pos[1]:
+        class_tank.rect.y += 1
+        class_tank.cur_frame = 1
+        class_tank.image = class_tank.frames[class_tank.cur_frame]
+    elif pos_tank[1] > end_pos[1]:
+        class_tank.rect.y -= 1
+        class_tank.cur_frame = 0
+        class_tank.image = class_tank.frames[class_tank.cur_frame]
+    class_tank.mouse_path = True
+    all_sprites.draw(screen)
+    tanks_sprites.draw(screen)
+    bullet_sprites.update()
+    bullet_sprites.draw(screen)
+    leaf_wall_group.draw(screen)
+    pygame.display.flip()
+    class_tank.update(last_event)
+
+
 class Tank_2_pdrl(pygame.sprite.Sprite):
     def __init__(self, sheet, columns, rows, x, y, x_pos, y_pos):
         super().__init__(tanks_sprites)
@@ -227,6 +300,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         self.count_shot = 0
         self.mouse_path = False
         self.start = 0, 0
+        self.numb = 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -307,11 +381,24 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                     self.mouse_path = True
                     self.start = (player2.rect[1] // 25 + (player2.rect[1] % 25 // 15),
                                   player2.rect[0] // 25 + (player2.rect[0] % 25 // 15))
+                    self.numb = 0
                 # else:
                 #     self.bullet_delay_mouse = get_tick
             if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
                 self.mouse_path = False
-                The_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
+                the_path = Finding_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
+                if player2.rect[:2] != [the_path[self.numb][1] * 25, the_path[self.numb][0] * 25]:
+                    prepare_start(player2.rect[:2], [the_path[self.numb][1] * 25, the_path[self.numb][0] * 25], player2,
+                                  args[0])
+                elif player2.rect[:2] == [the_path[self.numb][1] * 25, the_path[self.numb][0] * 25]:
+                    self.numb += 1
+                    self.mouse_path = True
+                    if player2.rect[:2] == [(args[0].pos[0] // 25) * 25, (args[0].pos[1] // 25) * 25]:
+                        self.numb = 0
+                        self.mouse_path = False
+                    self.update(args[0])
+
+
             elif pygame.key.get_pressed()[pygame.K_KP0] \
                     or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3):
                 if get_tick - self.bullet_delay >= 750:
@@ -438,7 +525,7 @@ class Tank_WASD(pygame.sprite.Sprite):
                 #     self.bullet_delay_mouse = get_tick
             if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
                 self.mouse_path = False
-                The_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
+                # print(The_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25)))
             elif pygame.key.get_pressed()[pygame.K_SPACE] or (
                     args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1):
                 if get_tick - self.bullet_delay >= 750:
