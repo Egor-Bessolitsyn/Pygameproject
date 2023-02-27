@@ -1,7 +1,6 @@
 import pygame
 import os
 import sys
-from the_path import The_Path
 
 FPS = 100
 size = WIDTH, HEIGHT = 800, 600
@@ -39,10 +38,10 @@ def start_game():
                 running = False
                 pygame.quit()
                 quit()
-            if event.type in [pygame.MOUSEBUTTONUP]:
+            if event.type in [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN]:
                 move_shot = True
                 last_shot = event
-            if event.type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION]:
+            if event.type in [pygame.KEYDOWN, pygame.KEYUP]:
                 move = True
                 last_event = event
         if move_shot:
@@ -169,6 +168,25 @@ class Tile(pygame.sprite.Sprite):
             tile_width * pos_x, tile_height * pos_y)
 
 
+def The_Path(start, end):
+    a = [[0 for i in range(24)] for _ in range(24)]
+    for sprt in wall_group.sprites():
+        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
+    for sprt in indestructible_wall_group.sprites():
+        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
+    for sprt in water_wall_group.sprites():
+        a[sprt.rect[1] // 25][sprt.rect[0] // 25] = 1
+
+    m = [[0 for i in range(24)] for _ in range(24)]
+    start = start
+    m[start[0]][start[1]] = 1
+    end = end
+    # print(end)
+    #
+    # for i in a:
+    #     print(i)
+
+
 class Button:
     def __init__(self, width, height, color, active_color):
         self.width = width
@@ -207,6 +225,8 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         self.tick_time = 0
         self.bullet_delay = 0
         self.count_shot = 0
+        self.mouse_path = False
+        self.start = 0, 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -282,7 +302,18 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player2, indestructible_wall_group) \
                             or pygame.sprite.spritecollideany(player2, water_wall_group):
                         self.rect.x += 1
-            if pygame.key.get_pressed()[pygame.K_KP0] or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3):
+            if args[0].type == pygame.MOUSEBUTTONDOWN:
+                if player2.rect.collidepoint(args[0].pos):
+                    self.mouse_path = True
+                    self.start = (player2.rect[1] // 25 + (player2.rect[1] % 25 // 15),
+                                  player2.rect[0] // 25 + (player2.rect[0] % 25 // 15))
+                # else:
+                #     self.bullet_delay_mouse = get_tick
+            if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
+                self.mouse_path = False
+                The_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
+            elif pygame.key.get_pressed()[pygame.K_KP0] \
+                    or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3):
                 if get_tick - self.bullet_delay >= 750:
                     self.bullet_delay = get_tick
                     if self.cur_frame == 0:
@@ -318,6 +349,8 @@ class Tank_WASD(pygame.sprite.Sprite):
         self.tick_time = 0
         self.bullet_delay = 0
         self.count_shot = 0
+        self.mouse_path = False
+        self.start = 0, 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -396,7 +429,17 @@ class Tank_WASD(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player1, indestructible_wall_group) \
                             or pygame.sprite.spritecollideany(player1, water_wall_group):
                         self.rect.x += 1
-            if pygame.key.get_pressed()[pygame.K_SPACE] or (
+            if args[0].type == pygame.MOUSEBUTTONDOWN:
+                if player1.rect.collidepoint(args[0].pos):
+                    self.mouse_path = True
+                    self.start = (player1.rect[1] // 25 + (player1.rect[1] % 25 // 15),
+                                  player1.rect[0] // 25 + (player1.rect[0] % 25 // 15))
+                # else:
+                #     self.bullet_delay_mouse = get_tick
+            if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
+                self.mouse_path = False
+                The_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
+            elif pygame.key.get_pressed()[pygame.K_SPACE] or (
                     args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1):
                 if get_tick - self.bullet_delay >= 750:
                     self.bullet_delay = get_tick
