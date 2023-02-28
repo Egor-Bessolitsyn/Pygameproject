@@ -333,9 +333,12 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
 
     def count_live(self):
         self.count_shot += 1
-        hit_sound = pygame.mixer.Sound("data/Есть пробитие.mp3")
-        pygame.mixer.Sound.play(hit_sound)
+        if self.count_shot != 3:
+            hit_sound = pygame.mixer.Sound("data/Есть пробитие.mp3")
+            pygame.mixer.Sound.play(hit_sound)
         if self.count_shot == 3:
+            kill_sound = pygame.mixer.Sound("data/Готов.mp3")
+            pygame.mixer.Sound.play(kill_sound)
             self.Tank_kill()
 
     def Tank_kill(self):
@@ -473,9 +476,12 @@ class Tank_WASD(pygame.sprite.Sprite):
 
     def count_live(self):
         self.count_shot += 1
-        hit_sound = pygame.mixer.Sound("data/Есть пробитие.mp3")
-        pygame.mixer.Sound.play(hit_sound)
+        if self.count_shot != 3:
+            hit_sound = pygame.mixer.Sound("data/Есть пробитие.mp3")
+            pygame.mixer.Sound.play(hit_sound)
         if self.count_shot == 3:
+            kill_sound = pygame.mixer.Sound("data/Готов.mp3")
+            pygame.mixer.Sound.play(kill_sound)
             self.Tank_kill()
 
     def Tank_kill(self):
@@ -706,15 +712,15 @@ def end_screen(Tank_win):
     if Tank_win == "Yellow_win":
         WINNER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
         screen.blit(WINNER, (130, 100))
-        LOSER = pygame.transform.scale(load_image('Green_Win.png'), (200, 200))
-        screen.blit(LOSER, (470, 100))
+        LO0SER = pygame.transform.scale(load_image('Green_Win.png'), (200, 200))
+        screen.blit(LO0SER, (470, 100))
         print_text("Yellow - WIN", 100, 350, font_size=40, font_color=(255, 255, 0))
         print_text("Green - LOSE", 450, 350, font_size=40, font_color=(0, 255, 0))
     if Tank_win == "Green_win":
         WINNER = pygame.transform.scale(load_image('Green_Win.png'), (200, 200))
         screen.blit(WINNER, (470, 100))
-        LOSER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
-        screen.blit(LOSER, (130, 100))
+        LO0SER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
+        screen.blit(LO0SER, (130, 100))
         print_text("Yellow - LOSE", 100, 350, font_size=40, font_color=(255, 255, 0))
         print_text("Green - WIN", 450, 350, font_size=40, font_color=(0, 255, 0))
 
