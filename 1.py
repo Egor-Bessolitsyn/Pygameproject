@@ -53,6 +53,10 @@ def start_game():
             move_shot = False
         if move:
             tanks_sprites.update(last_event)
+        if player2.update_path:
+            player2.update_mouse_path()
+        if player1.update_path:
+            player1.update_mouse_path()
         tanks_sprites.draw(screen)
         bullet_sprites.update()
         bullet_sprites.draw(screen)
@@ -220,27 +224,19 @@ def Finding_Path(start, end):
             i, j = cell[0], cell[1]
             if m[i][j] == k:
                 if i > 0 and j < len(m[i]) - 1 and m[i - 1][j] == 0 and a[i - 1][j] == 0 and not a[i - 1][j + 1]:
-                    # if j < 23 and m[i - 1][j + 1] == 0 and a[i - 1][j + 1] == 0:
                     m[i - 1][j] = k + 1
                     visited_new.append((i - 1, j))
-                    # m[i - 1][j + 1] = k + 1
                 if j > 0 and i < 23 and m[i][j - 1] == 0 and a[i][j - 1] == 0 and not a[i + 1][j - 1]:
-                    # if i < 23 and m[i + 1][j - 1] == 0 and a[i + 1][j - 1] == 0:
                     m[i][j - 1] = k + 1
                     visited_new.append((i, j - 1))
-                    # m[i + 1][j - 1] = k + 1
                 if i < len(m) - 2 and j < 23 and m[i + 1][j] == 0 and a[i + 1][j] == 0 and not a[i + 2][j] and not \
-                a[i + 1][j + 1] and not a[i + 2][j + 1]:
-                    # if j < 22 and m[i + 1][j + 1] == 0 and a[i + 1][j + 1] == 0 and not a[i + 2][j + 1]:
+                        a[i + 1][j + 1] and not a[i + 2][j + 1]:
                     m[i + 1][j] = k + 1
                     visited_new.append((i + 1, j))
-                    # m[i + 1][j + 1] = k + 1
                 if j < len(m[i]) - 2 and i < 23 and m[i][j + 1] == 0 and a[i][j + 1] == 0 and not a[i][j + 2] and not \
-                a[i + 1][j + 1] and not a[i + 1][j + 2]:
-                    # if i < 22 and m[i + 1][j + 1] <= k + 1 and a[i + 1][j + 1] == 0 and not a[i + 1][j + 2]:
+                        a[i + 1][j + 1] and not a[i + 1][j + 2]:
                     m[i][j + 1] = k + 1
                     visited_new.append((i, j + 1))
-                    # m[i + 1][j + 1] = k + 1
 
     k = 0
     while m[end[0]][end[1]] == 0:
@@ -272,7 +268,7 @@ def Finding_Path(start, end):
     return path[::-1]
 
 
-def prepare_start(pos_tank, end_pos, class_tank, last_event):
+def prepare_start(pos_tank, end_pos, class_tank):
     if pos_tank[0] < end_pos[0]:
         class_tank.rect.x += 1
         class_tank.cur_frame = 2
@@ -289,14 +285,6 @@ def prepare_start(pos_tank, end_pos, class_tank, last_event):
         class_tank.rect.y -= 1
         class_tank.cur_frame = 0
         class_tank.image = class_tank.frames[class_tank.cur_frame]
-    class_tank.mouse_path = True
-    all_sprites.draw(screen)
-    tanks_sprites.draw(screen)
-    bullet_sprites.update()
-    bullet_sprites.draw(screen)
-    leaf_wall_group.draw(screen)
-    pygame.display.flip()
-    class_tank.update(last_event)
 
 
 class Tank_2_pdrl(pygame.sprite.Sprite):
@@ -315,6 +303,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         self.bullet_delay = 0
         self.count_shot = 0
         self.mouse_path = False
+        self.update_path = False
         self.start = 0, 0
         self.numb = 0
 
@@ -351,6 +340,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP,
                                      pygame.MOUSEMOTION]:
             if pygame.key.get_pressed()[pygame.K_UP]:
+                self.update_path = False
                 self.cur_frame = 0
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
@@ -363,6 +353,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player2, water_wall_group):
                         self.rect.y += 1
             elif pygame.key.get_pressed()[pygame.K_DOWN]:
+                self.update_path = False
                 self.cur_frame = 1
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
@@ -375,6 +366,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player2, water_wall_group):
                         self.rect.y -= 1
             elif pygame.key.get_pressed()[pygame.K_RIGHT]:
+                self.update_path = False
                 self.cur_frame = 2
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
@@ -387,6 +379,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player2, water_wall_group):
                         self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_LEFT]:
+                self.update_path = False
                 self.cur_frame = 3
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
@@ -401,6 +394,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
             if args[0].type == pygame.MOUSEBUTTONDOWN:
                 if player2.rect.collidepoint(args[0].pos):
                     self.mouse_path = True
+                    self.update_path = False
                     self.start = (player2.rect[1] // 25 + (player2.rect[1] % 25 // 15),
                                   player2.rect[0] // 25 + (player2.rect[0] % 25 // 15))
                     self.numb = 0
@@ -408,19 +402,9 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                 #     self.bullet_delay_mouse = get_tick
             if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
                 self.mouse_path = False
-                the_path = Finding_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
-                if player2.rect[:2] != [the_path[self.numb][1] * 25, the_path[self.numb][0] * 25]:
-                    prepare_start(player2.rect[:2], [the_path[self.numb][1] * 25, the_path[self.numb][0] * 25], player2,
-                                  args[0])
-                elif player2.rect[:2] == [the_path[self.numb][1] * 25, the_path[self.numb][0] * 25]:
-                    self.numb += 1
-                    self.mouse_path = True
-                    if player2.rect[:2] == [(args[0].pos[0] // 25) * 25, (args[0].pos[1] // 25) * 25]:
-                        self.numb = 0
-                        self.mouse_path = False
-                    self.update(args[0])
-
-
+                self.the_path = Finding_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
+                self.update_path = True
+                self.update_mouse_path()
             elif pygame.key.get_pressed()[pygame.K_KP0] \
                     or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3):
                 if get_tick - self.bullet_delay >= 750:
@@ -442,6 +426,15 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
                                self.rect.x - 14 - 5, self.rect.y + 18, self.cur_frame)
 
+    def update_mouse_path(self):
+        if player2.rect[:2] != [self.the_path[self.numb][1] * 25, self.the_path[self.numb][0] * 25]:
+            prepare_start(player2.rect[:2], [self.the_path[self.numb][1] * 25, self.the_path[self.numb][0] * 25],
+                          player2)
+        elif player2.rect[:2] == [self.the_path[self.numb][1] * 25, self.the_path[self.numb][0] * 25]:
+            self.numb += 1
+            if self.numb == len(self.the_path):
+                self.update_path = False
+
 
 class Tank_WASD(pygame.sprite.Sprite):
     def __init__(self, sheet, columns, rows, x, y, x_pos, y_pos):
@@ -459,7 +452,9 @@ class Tank_WASD(pygame.sprite.Sprite):
         self.bullet_delay = 0
         self.count_shot = 0
         self.mouse_path = False
+        self.update_path = False
         self.start = 0, 0
+        self.numb = 0
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -497,6 +492,7 @@ class Tank_WASD(pygame.sprite.Sprite):
             if self.tick_time % 10 == 1:
                 self.tick_time %= 10
             if pygame.key.get_pressed()[pygame.K_w]:
+                self.update_path = False
                 self.cur_frame = 0
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
@@ -509,6 +505,7 @@ class Tank_WASD(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player1, water_wall_group):
                         self.rect.y += 1
             elif pygame.key.get_pressed()[pygame.K_s]:
+                self.update_path = False
                 self.cur_frame = 1
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
@@ -521,6 +518,7 @@ class Tank_WASD(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player1, water_wall_group):
                         self.rect.y -= 1
             elif pygame.key.get_pressed()[pygame.K_d]:
+                self.update_path = False
                 self.cur_frame = 2
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
@@ -533,6 +531,7 @@ class Tank_WASD(pygame.sprite.Sprite):
                             or pygame.sprite.spritecollideany(player1, water_wall_group):
                         self.rect.x -= 1
             elif pygame.key.get_pressed()[pygame.K_a]:
+                self.update_path = False
                 self.cur_frame = 3
                 self.create_mask()
                 self.image = self.frames[self.cur_frame]
@@ -547,13 +546,15 @@ class Tank_WASD(pygame.sprite.Sprite):
             if args[0].type == pygame.MOUSEBUTTONDOWN:
                 if player1.rect.collidepoint(args[0].pos):
                     self.mouse_path = True
+                    self.update_path = False
                     self.start = (player1.rect[1] // 25 + (player1.rect[1] % 25 // 15),
                                   player1.rect[0] // 25 + (player1.rect[0] % 25 // 15))
-                # else:
-                #     self.bullet_delay_mouse = get_tick
+                    self.numb = 0
             if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
                 self.mouse_path = False
-                # print(The_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25)))
+                self.the_path = Finding_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
+                self.update_path = True
+                self.update_mouse_path()
             elif pygame.key.get_pressed()[pygame.K_SPACE] or (
                     args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1):
                 if get_tick - self.bullet_delay >= 750:
@@ -574,6 +575,15 @@ class Tank_WASD(pygame.sprite.Sprite):
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x - 28, self.rect.y + 11, self.cur_frame)
                         Bullet(load_image("Bullet_sprite.png"), 4, 1,
                                self.rect.x - 14 - 5, self.rect.y + 18, self.cur_frame)
+
+    def update_mouse_path(self):
+        if player1.rect[:2] != [self.the_path[self.numb][1] * 25, self.the_path[self.numb][0] * 25]:
+            prepare_start(player1.rect[:2], [self.the_path[self.numb][1] * 25, self.the_path[self.numb][0] * 25],
+                          player1)
+        elif player1.rect[:2] == [self.the_path[self.numb][1] * 25, self.the_path[self.numb][0] * 25]:
+            self.numb += 1
+            if self.numb == len(self.the_path):
+                self.update_path = False
 
 
 class Shot(pygame.sprite.Sprite):
