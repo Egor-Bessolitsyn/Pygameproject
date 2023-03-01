@@ -763,7 +763,7 @@ def resert_score():
 
     while True:
         button_return_menu = Button(200, 40, (130, 130, 130), (100, 0, 0))
-        button_return_menu.draw(50, 500, 'Restart', restart)
+        button_return_menu.draw(50, 500, 'Restart', maps_menu)
         button_return_mainmenu = Button(200, 40, (130, 130, 130), (100, 0, 0))
         button_return_mainmenu.draw(290, 500, 'Main menu', start_screen)
         button_exit = Button(200, 40, (130, 130, 130), (100, 0, 0))
