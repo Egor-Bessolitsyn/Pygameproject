@@ -19,8 +19,8 @@ icon = pygame.image.load("data/icon.png")
 pygame.display.set_icon(icon)
 button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
 Map_name = ''
-yellow_count = 0
 green_count = 0
+yellow_count = 0
 fullscreen = False
 
 
