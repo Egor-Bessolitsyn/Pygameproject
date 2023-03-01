@@ -85,14 +85,12 @@ def BD(text):
                     SET Win_count = ?
                     WHERE Tank_name = ?
                     """), (yellow_count, 'Yellow_tank'))
-        print(yellow_count)
     if text == 'Green_tank':
         cur.execute(("""
             UPDATE Winstrick
             SET Win_count = ?
             WHERE Tank_name = ?
             """), (green_count, 'Green_tank'))
-        print(green_count)
     con.commit()
     con.close()
 
