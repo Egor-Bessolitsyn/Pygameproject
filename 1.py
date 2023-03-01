@@ -398,8 +398,6 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                     self.start = (player2.rect[1] // 25 + (player2.rect[1] % 25 // 15),
                                   player2.rect[0] // 25 + (player2.rect[0] % 25 // 15))
                     self.numb = 0
-                # else:
-                #     self.bullet_delay_mouse = get_tick
             if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
                 self.mouse_path = False
                 self.the_path = Finding_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
