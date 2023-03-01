@@ -2,6 +2,7 @@ import pygame
 import os
 import sys
 from sys import setrecursionlimit
+import sqlite3
 
 setrecursionlimit(5000)
 FPS = 100
@@ -18,11 +19,13 @@ icon = pygame.image.load("data/icon.png")
 pygame.display.set_icon(icon)
 button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
 Map_name = ''
+yellow_count = 0
+green_count = 0
 fullscreen = False
 
 
 def start_game():
-    global player1, player2
+    global player1, player2, Last_map
     player1, player2, level_x, level_y = generate_level(load_level(f'{Map_name}.txt'))
     size = (level_x + 1) * tile_width, (level_y + 1) * tile_height
     screen = pygame.display.set_mode(size)
@@ -63,6 +66,35 @@ def start_game():
         leaf_wall_group.draw(screen)
         clock.tick(FPS)
         pygame.display.flip()
+
+
+def restart():
+    global Map_name
+    Last_map = Map_name
+    Map_name = Last_map
+    start_game()
+
+
+def BD(text):
+    global yellow_count, green_count
+    con = sqlite3.connect('data/Score.db')
+    cur = con.cursor()
+    if text == 'Yellow_tank':
+        cur.execute(("""
+                    UPDATE Winstrick
+                    SET Win_count = ?
+                    WHERE Tank_name = ?
+                    """), (yellow_count, 'Yellow_tank'))
+        print(yellow_count)
+    if text == 'Green_tank':
+        cur.execute(("""
+            UPDATE Winstrick
+            SET Win_count = ?
+            WHERE Tank_name = ?
+            """), (green_count, 'Green_tank'))
+        print(green_count)
+    con.commit()
+    con.close()
 
 
 def end_game():
@@ -331,7 +363,10 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
             self.Tank_kill()
 
     def Tank_kill(self):
+        global yellow_count
         self.kill()
+        yellow_count += 1
+        BD('Yellow_tank')
         pygame.time.delay(1000)
         end_screen("Yellow_win")
 
@@ -478,7 +513,10 @@ class Tank_WASD(pygame.sprite.Sprite):
             self.Tank_kill()
 
     def Tank_kill(self):
+        global green_count
         self.kill()
+        green_count += 1
+        BD('Green_tank')
         pygame.time.delay(1000)
         end_screen("Green_win")
 
@@ -709,7 +747,36 @@ def start_screen():
         pygame.display.flip()
 
 
+def resert_score():
+    global yellow_count, green_count
+    yellow_count, green_count = 0, 0
+    update_sprite()
+    screen = pygame.display.set_mode(size)
+    fon = pygame.transform.scale(load_image('End.gif'), (WIDTH, HEIGHT))
+    screen.blit(fon, (0, 0))
+    print_text(f'Winstrick: {yellow_count}', 60, 40, font_size=50, font_color=(255, 0, 0))
+    print_text(f'Winstrick: {green_count}', 410, 40, font_size=50, font_color=(255, 0, 0))
+    WINNER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
+    screen.blit(WINNER, (130, 200))
+    LO0SER = pygame.transform.scale(load_image('Green_Win.png'), (200, 200))
+    screen.blit(LO0SER, (470, 200))
+
+    while True:
+        button_return_menu = Button(200, 40, (130, 130, 130), (100, 0, 0))
+        button_return_menu.draw(50, 500, 'Restart', restart)
+        button_return_mainmenu = Button(200, 40, (130, 130, 130), (100, 0, 0))
+        button_return_mainmenu.draw(290, 500, 'Main menu', start_screen)
+        button_exit = Button(200, 40, (130, 130, 130), (100, 0, 0))
+        button_exit.draw(540, 500, 'Exit', end_game)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+        pygame.display.flip()
+        clock.tick(FPS)
+
+
 def end_screen(Tank_win):
+    global yellow_count, green_count
     pygame.mixer.music.load("data/Win_music.mp3")
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.5)
@@ -717,6 +784,9 @@ def end_screen(Tank_win):
     screen = pygame.display.set_mode(size)
     fon = pygame.transform.scale(load_image('End.gif'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
+    print_text(f'Winstrick: {yellow_count}', 60, 40, font_size=50, font_color=(255, 0, 0))
+    print_text(f'Winstrick: {green_count}', 410, 40, font_size=50, font_color=(255, 0, 0))
+
     if Tank_win == "Yellow_win":
         WINNER = pygame.transform.scale(load_image('Yellow_Win.png'), (200, 200))
         screen.blit(WINNER, (130, 100))
@@ -739,6 +809,8 @@ def end_screen(Tank_win):
         button_return_mainmenu.draw(290, 500, 'Main menu', start_screen)
         button_exit = Button(200, 40, (130, 130, 130), (100, 0, 0))
         button_exit.draw(540, 500, 'Exit', end_game)
+        button_resert_score = Button(200, 35, (0, 0, 0), (100, 0, 0))
+        button_resert_score.draw(280, 0, 'Resert score', resert_score)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
