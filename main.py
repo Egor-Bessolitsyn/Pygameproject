@@ -269,11 +269,15 @@ def Finding_Path(start, end):
                     visited_new.append((i, j + 1))
 
     k = 0
-    while m[end[0]][end[1]] == 0:
+    ### k < 25 ** 2 т.к. Карта 24х24 размером
+    while m[end[0]][end[1]] == 0 and k < 25 ** 2:
         k += 1
         make_step(k)
         visited_old = visited_new[:]
         visited_new = []
+
+    if k == 25 ** 2:
+        return False
 
     i, j = end
     k = m[i][j]
@@ -302,19 +306,16 @@ def prepare_start(pos_tank, end_pos, class_tank):
     if pos_tank[0] < end_pos[0]:
         class_tank.rect.x += 1
         class_tank.cur_frame = 2
-        class_tank.image = class_tank.frames[class_tank.cur_frame]
     elif pos_tank[0] > end_pos[0]:
         class_tank.rect.x -= 1
         class_tank.cur_frame = 3
-        class_tank.image = class_tank.frames[class_tank.cur_frame]
     elif pos_tank[1] < end_pos[1]:
         class_tank.rect.y += 1
         class_tank.cur_frame = 1
-        class_tank.image = class_tank.frames[class_tank.cur_frame]
     elif pos_tank[1] > end_pos[1]:
         class_tank.rect.y -= 1
         class_tank.cur_frame = 0
-        class_tank.image = class_tank.frames[class_tank.cur_frame]
+    class_tank.image = class_tank.frames[class_tank.cur_frame]
 
 
 class Tank_2_pdrl(pygame.sprite.Sprite):
@@ -336,6 +337,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         self.update_path = False
         self.start = 0, 0
         self.numb = 0
+        self.can_shot = False
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -426,18 +428,23 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                         self.rect.x += 1
             if args[0].type == pygame.MOUSEBUTTONDOWN:
                 if player2.rect.collidepoint(args[0].pos):
+                    self.can_shot = False
                     self.mouse_path = True
                     self.update_path = False
                     self.start = (player2.rect[1] // 25 + (player2.rect[1] % 25 // 15),
                                   player2.rect[0] // 25 + (player2.rect[0] % 25 // 15))
                     self.numb = 0
+                else:
+                    self.can_shot = True
             if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
                 self.mouse_path = False
                 self.the_path = Finding_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
-                self.update_path = True
-                self.update_mouse_path()
-            elif pygame.key.get_pressed()[pygame.K_KP0] \
-                    or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3):
+                if self.the_path:
+                    self.update_path = True
+                    self.update_mouse_path()
+            elif (pygame.key.get_pressed()[pygame.K_KP0]
+                  or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3)) \
+                    and player1.can_shot:
                 if get_tick - self.bullet_delay >= 750:
                     self.bullet_delay = get_tick
                     if self.cur_frame == 0:
@@ -486,6 +493,7 @@ class Tank_WASD(pygame.sprite.Sprite):
         self.update_path = False
         self.start = 0, 0
         self.numb = 0
+        self.can_shot = False
 
     def cut_sheet(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -579,18 +587,23 @@ class Tank_WASD(pygame.sprite.Sprite):
                         self.rect.x += 1
             if args[0].type == pygame.MOUSEBUTTONDOWN:
                 if player1.rect.collidepoint(args[0].pos):
+                    self.can_shot = False
                     self.mouse_path = True
                     self.update_path = False
                     self.start = (player1.rect[1] // 25 + (player1.rect[1] % 25 // 15),
                                   player1.rect[0] // 25 + (player1.rect[0] % 25 // 15))
                     self.numb = 0
+                else:
+                    self.can_shot = True
             if self.mouse_path and args[0].type == pygame.MOUSEBUTTONUP:
                 self.mouse_path = False
                 self.the_path = Finding_Path(self.start, (args[0].pos[1] // 25, args[0].pos[0] // 25))
-                self.update_path = True
-                self.update_mouse_path()
-            elif pygame.key.get_pressed()[pygame.K_SPACE] or (
-                    args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1):
+                if self.the_path:
+                    self.update_path = True
+                    self.update_mouse_path()
+            elif (pygame.key.get_pressed()[pygame.K_SPACE] or (
+                    args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1)) \
+                    and player2.can_shot:
                 if get_tick - self.bullet_delay >= 750:
                     self.bullet_delay = get_tick
                     if self.cur_frame == 0:
