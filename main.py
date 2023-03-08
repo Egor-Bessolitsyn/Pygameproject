@@ -18,6 +18,7 @@ pygame.display.set_caption("Танчики")
 icon = pygame.image.load("data/icon.png")
 pygame.display.set_icon(icon)
 button_sound = pygame.mixer.Sound("data/mouse-click.mp3")
+shot_sound = pygame.mixer.Sound("data/Выстрел.mp3")
 Map_name = ''
 yellow_count = 0
 green_count = 0
@@ -446,6 +447,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                   or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3)) \
                     and player1.can_shot:
                 if get_tick - self.bullet_delay >= 750:
+                    pygame.mixer.Sound.play(shot_sound)
                     self.bullet_delay = get_tick
                     if self.cur_frame == 0:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y - 28, self.cur_frame)
@@ -605,6 +607,7 @@ class Tank_WASD(pygame.sprite.Sprite):
                     args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1)) \
                     and player2.can_shot:
                 if get_tick - self.bullet_delay >= 750:
+                    pygame.mixer.Sound.play(shot_sound)
                     self.bullet_delay = get_tick
                     if self.cur_frame == 0:
                         Shot(load_image("shot_sprite.png"), 6, 4, self.rect.x + 11, self.rect.y - 28, self.cur_frame)
