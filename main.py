@@ -375,8 +375,6 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         get_tick = pygame.time.get_ticks()
         if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP,
                                      pygame.MOUSEMOTION]:
-            if pygame.key.get_pressed()[pygame.K_KP0]:
-                self.can_shot = True
             if pygame.key.get_pressed()[pygame.K_UP]:
                 self.update_path = False
                 self.cur_frame = 0
@@ -445,9 +443,9 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                 if self.the_path:
                     self.update_path = True
                     self.update_mouse_path()
-            elif (pygame.key.get_pressed()[pygame.K_KP0]
-                  or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3)) \
-                    and player2.can_shot:
+            elif pygame.key.get_pressed()[pygame.K_KP0] or \
+                    (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3
+                     and player1.can_shot):
                 if get_tick - self.bullet_delay >= 750:
                     pygame.mixer.Sound.play(shot_sound)
                     self.bullet_delay = get_tick
@@ -534,8 +532,6 @@ class Tank_WASD(pygame.sprite.Sprite):
         get_tick = pygame.time.get_ticks()
         if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP,
                                      pygame.MOUSEMOTION]:
-            if pygame.key.get_pressed()[pygame.K_SPACE]:
-                self.can_shot = True
             if pygame.key.get_pressed()[pygame.K_w]:
                 self.update_path = False
                 self.cur_frame = 0
@@ -604,9 +600,9 @@ class Tank_WASD(pygame.sprite.Sprite):
                 if self.the_path:
                     self.update_path = True
                     self.update_mouse_path()
-            elif (pygame.key.get_pressed()[pygame.K_SPACE] or (
-                    args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1)) \
-                    and player1.can_shot:
+            elif pygame.key.get_pressed()[pygame.K_SPACE] or (
+                    args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1
+                    and player2.can_shot):
                 if get_tick - self.bullet_delay >= 750:
                     pygame.mixer.Sound.play(shot_sound)
                     self.bullet_delay = get_tick
@@ -635,6 +631,37 @@ class Tank_WASD(pygame.sprite.Sprite):
             self.numb += 1
             if self.numb == len(self.the_path):
                 self.update_path = False
+
+
+class Bah(pygame.sprite.Sprite):
+    def __init__(self, sheet, x, y):
+        super().__init__(bullet_sprites)
+        self.frames = []
+        self.cut_sheet(sheet, 9)
+        self.cur_frame = 0
+        self.image = self.frames[self.cur_frame]
+        self.rect = self.rect.move(x, y)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.tick_time = 1
+
+    def cut_sheet(self, sheet, columns):
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns, 50)
+        for i in range(columns):
+            frame_location = (self.rect.w * i, 0)
+            self.frames.append(sheet.subsurface(pygame.Rect(
+                frame_location, self.rect.size)))
+
+    def update(self, *args):
+        if not self.tick_time % 10:
+            self.tick_time = 1
+            self.cur_frame += 1
+            self.image = self.frames[self.cur_frame]
+            if self.cur_frame == 8:
+                self.kill()
+        else:
+            self.tick_time += 1
 
 
 class Shot(pygame.sprite.Sprite):
@@ -699,20 +726,24 @@ class Bullet(pygame.sprite.Sprite):
         if gets_git_ind_wall:
             for i in gets_git_ind_wall:
                 if pygame.sprite.collide_mask(self, i):
+                    Bah(load_image('Bah.png'), self.rect[0] - 15, self.rect[1] - 15)
                     self.kill()
         gets_git_wall_gr = pygame.sprite.spritecollide(self, wall_group, False)
         if gets_git_wall_gr:
             for i in gets_git_wall_gr:
                 if pygame.sprite.collide_mask(self, i):
+                    Bah(load_image('Bah.png'), self.rect[0] - 15, self.rect[1] - 15)
                     self.kill()
                     Tile('empty', i.rect.x // 25, i.rect.y // 25)
                     i.kill()
         if not self.rect.colliderect(screen_rect):
             self.kill()
         elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[0]):
+            Bah(load_image('Bah.png'), self.rect[0] - 15, self.rect[1] - 15)
             self.kill()
             player1.count_live()
         elif pygame.sprite.collide_mask(self, tanks_sprites.sprites()[1]):
+            Bah(load_image('Bah.png'), self.rect[0] - 15, self.rect[1] - 15)
             self.kill()
             player2.count_live()
         else:
