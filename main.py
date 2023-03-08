@@ -375,6 +375,8 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
         get_tick = pygame.time.get_ticks()
         if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP,
                                      pygame.MOUSEMOTION]:
+            if pygame.key.get_pressed()[pygame.K_KP0]:
+                self.can_shot = True
             if pygame.key.get_pressed()[pygame.K_UP]:
                 self.update_path = False
                 self.cur_frame = 0
@@ -445,7 +447,7 @@ class Tank_2_pdrl(pygame.sprite.Sprite):
                     self.update_mouse_path()
             elif (pygame.key.get_pressed()[pygame.K_KP0]
                   or (args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 3)) \
-                    and player1.can_shot:
+                    and player2.can_shot:
                 if get_tick - self.bullet_delay >= 750:
                     pygame.mixer.Sound.play(shot_sound)
                     self.bullet_delay = get_tick
@@ -532,9 +534,8 @@ class Tank_WASD(pygame.sprite.Sprite):
         get_tick = pygame.time.get_ticks()
         if args and args[0].type in [pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP,
                                      pygame.MOUSEMOTION]:
-            self.tick_time += 1
-            if self.tick_time % 10 == 1:
-                self.tick_time %= 10
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
+                self.can_shot = True
             if pygame.key.get_pressed()[pygame.K_w]:
                 self.update_path = False
                 self.cur_frame = 0
@@ -605,7 +606,7 @@ class Tank_WASD(pygame.sprite.Sprite):
                     self.update_mouse_path()
             elif (pygame.key.get_pressed()[pygame.K_SPACE] or (
                     args[0].type == pygame.MOUSEBUTTONUP and args[0].button == 1)) \
-                    and player2.can_shot:
+                    and player1.can_shot:
                 if get_tick - self.bullet_delay >= 750:
                     pygame.mixer.Sound.play(shot_sound)
                     self.bullet_delay = get_tick
